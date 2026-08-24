@@ -8,7 +8,7 @@ class DiscordFormatter:
     def build_ansi_dossier(dossier: SettlementDossier) -> str:
         """
         Gera um painel com formatação ANSI nativa do Discord e emojis temáticos
-        com largura uniforme e alinhamento milimétrico.
+        com largura uniforme e alinhamento milimétrico, incluindo First Herald.
         """
         blue_team = dossier.winner_code if dossier.winner_side == "BLUE" else dossier.loser_code
         red_team = dossier.winner_code if dossier.winner_side == "RED" else dossier.loser_code
@@ -59,6 +59,7 @@ class DiscordFormatter:
             f"   🩸 First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
             f"   🏰 First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
             f"   🐲 First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
+            f"   🦀 First Herald: \u001b[33;1m{dossier.first_herald_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_herald_time})\u001b[0m",
             f"   👾 First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
             div_bar,
             f"\u001b[37;1m🏁 CORRIDAS DE ABATES\u001b[0m",
