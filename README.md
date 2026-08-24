@@ -1,4 +1,4 @@
-# 🎮 LoL Settlement Hub & Data Lake
+# 🎮 LOL-Database & Data Lake
 
 > **Motor Autônomo de Liquidação de Apostas, Telemetria Oficial da Riot Games & Data Lake de Esports**
 
@@ -11,7 +11,7 @@
 
 ## 🎯 Visão Geral
 
-O **LoL Settlement Hub** é um sistema desacoplado, resiliente e autônomo projetado para auditar e liquidar instantaneamente mercados de apostas de League of Legends profissional (CBLOL, LCK, LPL, LEC, LCS, Worlds, MSI) no segundo exato em que o Nexus é destruído.
+O **LOL-Database** é um sistema desacoplado, resiliente e autônomo projetado para auditar e liquidar instantaneamente mercados de apostas de League of Legends profissional (CBLOL, LCK, LPL, LEC, LCS, Worlds, MSI) no segundo exato em que o Nexus é destruído.
 
 ### 🛡️ Pilares Fundamentais (Diretrizes do `LICOES.md`)
 
@@ -119,10 +119,10 @@ Acesse `http://localhost:8888` no seu navegador.
    ```bash
    git init
    git add .
-   git commit -m "feat: lol-settlement-hub initial release"
-   git remote add origin https://github.com/vctr42/lol-settlement-hub.git
+   git commit -m "feat: lol-database initial release"
+   git remote add origin https://github.com/vctr42/LOL-Database.git
    git push -u origin main
    ```
-2. No Netlify, vincule o repositório `lol-settlement-hub`.
+2. No Netlify, vincule o repositório `LOL-Database`.
 3. Configure as variáveis de ambiente no painel do Netlify (`Site configuration > Environment variables`).
 4. O deploy será realizado e as Netlify Functions estarão ativas para monitoramento 24/7!

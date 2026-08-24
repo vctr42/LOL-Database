@@ -1,5 +1,5 @@
 -- =========================================================================
--- LOL SETTLEMENT HUB - SUPABASE DATA LAKE & TELEMETRY SCHEMA
+-- LOL-DATABASE - SUPABASE DATA LAKE & TELEMETRY SCHEMA
 -- =========================================================================
 
 -- 1. TABELA DE SÉRIES / CONFRONTOS (Matches)

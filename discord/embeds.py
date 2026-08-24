@@ -54,7 +54,7 @@ class DiscordFormatter:
     def build_discord_payload(dossier: SettlementDossier, league_config: Dict[str, Any]) -> Dict[str, Any]:
         """Constrói payload completo de Webhook do Discord com Embeds e bloco YAML."""
         yaml_content = DiscordFormatter.build_yaml_dossier(dossier)
-        bot_name = league_config.get("bot_username", "LoL Settlement Engine")
+        bot_name = league_config.get("bot_username", "LOL-Database Engine")
         avatar_url = league_config.get("avatar_url", "")
         color = league_config.get("color", 5793266)
 
@@ -85,7 +85,7 @@ class DiscordFormatter:
                         }
                     ],
                     "footer": {
-                        "text": "LoL Settlement Hub • In-Game Clock Riot Games • Zero-Doubt Verified"
+                        "text": "LOL-Database • In-Game Clock Riot Games • Zero-Doubt Verified"
                     }
                 }
             ]

@@ -14,7 +14,7 @@ class RiotFeedClient:
         self.timeout = timeout
         self.session = requests.Session()
         self.session.headers.update({
-            "User-Agent": "LolSettlementHub/1.0",
+            "User-Agent": "LOL-Database/1.0",
             "Accept": "application/json"
         })
         if self.api_key:

@@ -1,5 +1,5 @@
 {
-  "name": "lol-settlement-hub",
+  "name": "lol-database",
   "version": "1.0.0",
   "description": "Motor de Liquidação de Apostas, Telemetria Oficial da Riot Games e Data Lake de Esports",
   "main": "netlify/functions/scan_matches.js",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-LoL Settlement Hub - Executável CLI Principal
+LOL-Database - Executável CLI Principal
 Permite disparar varredura, auditar partidas e gerar dossiês de liquidação sob demanda.
 """
 
@@ -23,7 +23,7 @@ from tests.mock_data import get_valid_cblol_window_payload
 
 def run_demo():
     print("=" * 65)
-    print("🎮 LoL Settlement Hub • Auditoria & Liquidação Oficial")
+    print("🎮 LOL-Database • Auditoria & Liquidação Oficial")
     print("=" * 65)
     
     print("\n[1/4] Carregando telemetria bruta da Riot CDN...")

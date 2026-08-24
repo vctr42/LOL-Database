@@ -58,7 +58,7 @@
   "default": {
     "name": "GERAL",
     "channel_name": "#liquidação-geral",
-    "bot_username": "LoL Settlement Engine",
+    "bot_username": "LOL-Database Engine",
     "avatar_url": "",
     "color": 5793266,
     "env_webhook": "DISCORD_WEBHOOK_DEFAULT"
