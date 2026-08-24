@@ -7,14 +7,13 @@ class DiscordFormatter:
     @staticmethod
     def build_ansi_dossier(dossier: SettlementDossier) -> str:
         """
-        Gera um painel com formatação ANSI nativa do Discord com totais consolidados.
-        Exemplo de exibição de objetivos:
-          Torres: 11  (PNG: 9 | LLL: 2)
+        Gera um painel com formatação ANSI nativa do Discord com ícones temáticos de League of Legends.
+        Combina emojis visuais com separadores limpos e cores vibrantes.
         """
         blue_team = dossier.winner_code if dossier.winner_side == "BLUE" else dossier.loser_code
         red_team = dossier.winner_code if dossier.winner_side == "RED" else dossier.loser_code
 
-        # Cálculos de Totais Consolidados (Para Over / Under)
+        # Cálculos de Totais Consolidados (Para Mercados Over / Under)
         total_kills = dossier.blue_kills + dossier.red_kills
         total_towers = dossier.blue_towers + dossier.red_towers
         total_dragons = dossier.blue_dragons + dossier.red_dragons
@@ -26,27 +25,27 @@ class DiscordFormatter:
 
         lines = [
             "```ansi",
-            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m \u001b[32;1m{dossier.winner_code} ({dossier.winner_side})\u001b[0m  \u001b[30;1m│\u001b[0m  \u001b[37;1m⏱️  DURAÇÃO:\u001b[0m \u001b[33;1m{dossier.duration_formatted}\u001b[0m",
-            f"\u001b[37;1m⚔️  ABATES:\u001b[0m   \u001b[37;1m{str(total_kills).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_kills}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_kills}\u001b[30;1m)\u001b[0m  \u001b[30;1m[+{dossier.kill_spread} {dossier.kill_leader_code}]\u001b[0m",
-            f"\u001b[32;1m🟢 GREEN:\u001b[0m    \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
+            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m   \u001b[32;1m{dossier.winner_code} ({dossier.winner_side})\u001b[0m  \u001b[30;1m│\u001b[0m  \u001b[37;1m⏱️  DURAÇÃO:\u001b[0m \u001b[33;1m{dossier.duration_formatted}\u001b[0m",
+            f"\u001b[37;1m⚔️  ABATES:\u001b[0m     \u001b[37;1m{str(total_kills).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_kills}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_kills}\u001b[30;1m)\u001b[0m  \u001b[30;1m[+{dossier.kill_spread} {dossier.kill_leader_code}]\u001b[0m",
+            f"\u001b[32;1m🟢 GREEN:\u001b[0m      \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
             div_bar,
-            f"\u001b[37;1m📊 TOTAIS DE OBJETIVOS (TOTAL & POR TIME)\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_towers}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_towers}\u001b[30;1m)\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Dragões:    \u001b[37;1m{str(total_dragons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_dragons}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_dragons}\u001b[30;1m)\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Barões:     \u001b[37;1m{str(total_barons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_barons}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_barons}\u001b[30;1m)\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Arautos:    \u001b[37;1m{str(total_heralds).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_heralds}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_heralds}\u001b[30;1m)\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Inibidores: \u001b[37;1m{str(total_inhibitors).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_inhibitors}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_inhibitors}\u001b[30;1m)\u001b[0m",
+            f"\u001b[37;1m📊 TOTAIS DE OBJETIVOS\u001b[0m",
+            f"   🏰 Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_towers}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_towers}\u001b[30;1m)\u001b[0m",
+            f"   🐉 Dragões:    \u001b[37;1m{str(total_dragons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_dragons}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_dragons}\u001b[30;1m)\u001b[0m",
+            f"   👾 Barões:     \u001b[37;1m{str(total_barons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_barons}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_barons}\u001b[30;1m)\u001b[0m",
+            f"   🦀 Arautos:    \u001b[37;1m{str(total_heralds).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_heralds}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_heralds}\u001b[30;1m)\u001b[0m",
+            f"   🏛️  Inibidores: \u001b[37;1m{str(total_inhibitors).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{blue_team}: {dossier.blue_inhibitors}\u001b[30;1m │ \u001b[31;1m{red_team}: {dossier.red_inhibitors}\u001b[30;1m)\u001b[0m",
             div_bar,
             f"\u001b[37;1m⚡ FIRSTS & EVENTOS\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
+            f"   🩸 First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
+            f"   🛡️  First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
+            f"   🐲 First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
+            f"   👾 First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(6)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
             div_bar,
             f"\u001b[37;1m🏁 CORRIDAS DE ABATES\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Corrida 5:    \u001b[32;1m{dossier.race_to_5}\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Corrida 10:   \u001b[32;1m{dossier.race_to_10}\u001b[0m",
-            f"   \u001b[30;1m•\u001b[0m Corrida 15:   \u001b[32;1m{dossier.race_to_15}\u001b[0m",
+            f"   ⚡ Corrida 5:    \u001b[32;1m{dossier.race_to_5}\u001b[0m",
+            f"   ⚡ Corrida 10:   \u001b[32;1m{dossier.race_to_10}\u001b[0m",
+            f"   ⚡ Corrida 15:   \u001b[32;1m{dossier.race_to_15}\u001b[0m",
             "```"
         ]
         return "\n".join(lines)
