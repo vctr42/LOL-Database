@@ -40,6 +40,8 @@ O sistema tem três papéis fundamentais:
    * Compatível com **PostgreSQL em Nuvem (Supabase/Neon)** para produção e **SQLite** para testes locais.
 7. **Execução Autônoma 24/7 sem Dependência de Computador Ligado:**
    * Arquitetura pronta para deploy em nuvem (Serverless / Scheduled Cron Functions no Netlify ou container Docker contínuo).
+8. **Política Incontestável de Dados 100% Reais & Zero Mocks/Fictícios:**
+   * É terminantemente proibido exibir ou manter qualquer dado simulado, fictício ou de demonstração no frontend ou na API. Toda e qualquer informação deve ser 100% real, auditada e originada diretamente da telemetria da Riot Games. Se não houver dados, o sistema deve apresentar estado vazio limpo e transparente.
 
 ---
 

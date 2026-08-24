@@ -1,4 +1,5 @@
 // public/js/h2h.js
+// REGRA INCONTESTÁVEL: 100% DADOS REAIS - ZERO DADOS FICTÍCIOS
 
 document.addEventListener("DOMContentLoaded", () => {
   const teamAInput = document.getElementById("teamAInput");
@@ -29,27 +30,32 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function executeH2H() {
-    const teamA = (teamAInput.value || "T1").trim().toUpperCase();
-    const teamB = (teamBInput.value || "GEN").trim().toUpperCase();
+    const teamA = (teamAInput.value || "").trim().toUpperCase();
+    const teamB = (teamBInput.value || "").trim().toUpperCase();
+
+    if (!teamA || !teamB) {
+      alert("Por favor, digite a sigla de duas equipes para comparar.");
+      return;
+    }
 
     nameTeamA.textContent = teamA;
     nameTeamB.textContent = teamB;
 
     try {
-      const resp = await fetch(`/api/api_h2h?team_a=${teamA}&team_b=${teamB}`);
+      const resp = await fetch(`/api/api_h2h?team_a=${encodeURIComponent(teamA)}&team_b=${encodeURIComponent(teamB)}`);
       if (resp.ok) {
         const data = await resp.json();
         renderH2H(data, teamA, teamB);
       } else {
-        renderMockH2H(teamA, teamB);
+        renderEmptyH2H(teamA, teamB);
       }
     } catch (e) {
-      renderMockH2H(teamA, teamB);
+      renderEmptyH2H(teamA, teamB);
     }
   }
 
   function renderH2H(data, teamA, teamB) {
-    if (data.direct_h2h_found) {
+    if (data && data.direct_h2h_found && data.total_games > 0) {
       winsTeamA.textContent = `${data.wins_a} vitórias`;
       winRateTeamA.textContent = `${data.win_rate_a_pct}%`;
       killsTeamA.textContent = `${data.avg_kills_a} / mapa`;
@@ -64,60 +70,57 @@ document.addEventListener("DOMContentLoaded", () => {
       ftRateTeamB.textContent = `${data.first_tower_rate_b_pct}%`;
       fdRateTeamB.textContent = `${data.first_dragon_rate_b_pct}%`;
 
-      h2hAvgDuration.textContent = `Duração Média: ${data.avg_duration_formatted || "33:40"}`;
+      h2hAvgDuration.textContent = `Duração Média Real: ${data.avg_duration_formatted || "--:--"}`;
+
+      if (data.recent_games && data.recent_games.length > 0) {
+        h2hTableBody.innerHTML = data.recent_games.map(g => `
+          <tr>
+            <td><strong>${g.match_title || `Mapa ${g.game_number || 1}`}</strong></td>
+            <td><span class="green-highlight">${g.winner_code || "--"}</span></td>
+            <td>${g.duration_formatted || "--:--"}</td>
+            <td>${g.blue_kills ?? 0} x ${g.red_kills ?? 0}</td>
+            <td>${g.first_blood_team || "--"}</td>
+            <td>${g.first_tower_team || "--"}</td>
+            <td>${g.handicap_green_line || "--"}</td>
+          </tr>
+        `).join("");
+      } else {
+        h2hTableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+              Nenhum mapa individual detalhado encontrado para este confronto no Data Lake.
+            </td>
+          </tr>
+        `;
+      }
     } else {
-      renderMockH2H(teamA, teamB);
+      renderEmptyH2H(teamA, teamB);
     }
   }
 
-  function renderMockH2H(teamA, teamB) {
-    winsTeamA.textContent = "6 vitórias";
-    winRateTeamA.textContent = "60.0%";
-    killsTeamA.textContent = "15.4 / mapa";
-    fbRateTeamA.textContent = "70.0%";
-    ftRateTeamA.textContent = "60.0%";
-    fdRateTeamA.textContent = "50.0%";
+  function renderEmptyH2H(teamA, teamB) {
+    winsTeamA.textContent = "0 vitórias";
+    winRateTeamA.textContent = "0.0%";
+    killsTeamA.textContent = "--";
+    fbRateTeamA.textContent = "--";
+    ftRateTeamA.textContent = "--";
+    fdRateTeamA.textContent = "--";
 
-    winsTeamB.textContent = "4 vitórias";
-    winRateTeamB.textContent = "40.0%";
-    killsTeamB.textContent = "12.8 / mapa";
-    fbRateTeamB.textContent = "30.0%";
-    ftRateTeamB.textContent = "40.0%";
-    fdRateTeamB.textContent = "50.0%";
+    winsTeamB.textContent = "0 vitórias";
+    winRateTeamB.textContent = "0.0%";
+    killsTeamB.textContent = "--";
+    fbRateTeamB.textContent = "--";
+    ftRateTeamB.textContent = "--";
+    fdRateTeamB.textContent = "--";
 
-    h2hAvgDuration.textContent = "Duração Média: 32:20";
+    h2hAvgDuration.textContent = "Duração Média: Sem registros";
 
     h2hTableBody.innerHTML = `
       <tr>
-        <td><strong>[LCK] ${teamA} vs ${teamB} — MAPA 3</strong></td>
-        <td><span class="green-highlight">${teamA}</span></td>
-        <td>31:45</td>
-        <td>18 x 11</td>
-        <td>${teamA}</td>
-        <td>${teamA}</td>
-        <td>${teamA} até -6.5</td>
-      </tr>
-      <tr>
-        <td><strong>[LCK] ${teamA} vs ${teamB} — MAPA 2</strong></td>
-        <td><span class="green-highlight">${teamB}</span></td>
-        <td>35:10</td>
-        <td>11 x 18</td>
-        <td>${teamA}</td>
-        <td>${teamB}</td>
-        <td>${teamB} até -6.5</td>
-      </tr>
-      <tr>
-        <td><strong>[LCK] ${teamA} vs ${teamB} — MAPA 1</strong></td>
-        <td><span class="green-highlight">${teamA}</span></td>
-        <td>29:50</td>
-        <td>16 x 8</td>
-        <td>${teamA}</td>
-        <td>${teamA}</td>
-        <td>${teamA} até -7.5</td>
+        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+          Nenhum confronto direto oficial registrado no Data Lake entre ${teamA} e ${teamB}.
+        </td>
       </tr>
     `;
   }
-
-  // Executar busca inicial
-  executeH2H();
 });
