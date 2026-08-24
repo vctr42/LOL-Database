@@ -3,57 +3,65 @@
     "name": "CBLOL",
     "channel_name": "#cblol",
     "bot_username": "CBLOL Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/cblol.png",
+    "avatar_url": "",
     "color": 3447003,
     "env_webhook": "DISCORD_WEBHOOK_CBLOL"
+  },
+  "circuito-desafiante": {
+    "name": "Circuito Desafiante",
+    "channel_name": "#circuito-desafiante",
+    "bot_username": "Circuito Desafiante Bot",
+    "avatar_url": "",
+    "color": 15105570,
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE"
+  },
+  "cblol-academy": {
+    "name": "CBLOL Academy",
+    "channel_name": "#circuito-desafiante",
+    "bot_username": "CBLOL Academy Bot",
+    "avatar_url": "",
+    "color": 15105570,
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE"
   },
   "lck": {
     "name": "LCK",
     "channel_name": "#lck",
     "bot_username": "LCK Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/lck.png",
+    "avatar_url": "",
     "color": 10181046,
     "env_webhook": "DISCORD_WEBHOOK_LCK"
+  },
+  "lck-challengers": {
+    "name": "LCK Challengers",
+    "channel_name": "#lck-challengers",
+    "bot_username": "LCK Challengers Bot",
+    "avatar_url": "",
+    "color": 9807270,
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL"
+  },
+  "lck_cl": {
+    "name": "LCK Challengers",
+    "channel_name": "#lck-challengers",
+    "bot_username": "LCK Challengers Bot",
+    "avatar_url": "",
+    "color": 9807270,
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL"
   },
   "lpl": {
     "name": "LPL",
     "channel_name": "#lpl",
     "bot_username": "LPL Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/lpl.png",
+    "avatar_url": "",
     "color": 15158332,
     "env_webhook": "DISCORD_WEBHOOK_LPL"
   },
-  "lec": {
-    "name": "LEC",
-    "channel_name": "#lec",
-    "bot_username": "LEC Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/lec.png",
-    "color": 1752220,
-    "env_webhook": "DISCORD_WEBHOOK_LEC"
-  },
-  "lcs": {
-    "name": "LCS",
-    "channel_name": "#lcs",
-    "bot_username": "LCS Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/lcs.png",
+  "lcp": {
+    "name": "LCP",
+    "channel_name": "#lcp",
+    "bot_username": "LCP Settlement Bot",
+    "avatar_url": "",
     "color": 3066993,
-    "env_webhook": "DISCORD_WEBHOOK_LCS"
-  },
-  "worlds": {
-    "name": "WORLDS",
-    "channel_name": "#worlds",
-    "bot_username": "Worlds Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/worlds.png",
-    "color": 15844367,
-    "env_webhook": "DISCORD_WEBHOOK_WORLDS"
-  },
-  "msi": {
-    "name": "MSI",
-    "channel_name": "#msi",
-    "bot_username": "MSI Settlement Bot",
-    "avatar_url": "https://raw.githubusercontent.com/vctr42/lol-settlement-hub/main/public/assets/msi.png",
-    "color": 15105570,
-    "env_webhook": "DISCORD_WEBHOOK_MSI"
+    "env_webhook": "DISCORD_WEBHOOK_LCP"
   },
   "default": {
     "name": "GERAL",
