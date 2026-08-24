@@ -4,7 +4,8 @@
   "description": "Motor de Liquidação de Apostas, Telemetria Oficial da Riot Games e Data Lake de Esports",
   "main": "netlify/functions/scan_matches.js",
   "scripts": {
-    "start": "npx serve public -p 8888",
+    "dev": "node server.js",
+    "start": "node server.js",
     "test": "pytest tests -v",
     "build": "node -e \"console.log('Build complete')\""
   },
