@@ -53,9 +53,15 @@ class DiscordFormatter:
 
         div_bar = "\u001b[30;1m──────────────────────────────────────────────\u001b[0m"
 
-        # Vencedor com a cor do seu respectivo lado
+        # Vencedor com nome completo + sigla + cor do seu respectivo lado
         winner_color = "\u001b[36;1m" if dossier.winner_side == "BLUE" else "\u001b[31;1m"
-        winner_display = f"{winner_color}{dossier.winner_code} ({dossier.winner_side})\u001b[0m"
+        w_name = getattr(dossier, "winner_name", "") or ""
+        w_code = dossier.winner_code
+        if w_name and w_name.strip().upper() != w_code.strip().upper():
+            winner_text = f"{w_name} ({w_code}) ({dossier.winner_side})"
+        else:
+            winner_text = f"{w_code} ({dossier.winner_side})"
+        winner_display = f"{winner_color}{winner_text}\u001b[0m"
 
         # Formatação de Handicap com as cores dos respectivos times
         spread = dossier.kill_spread

@@ -28,9 +28,17 @@ class SettlementDossier(BaseModel):
     match_id: str
     league_slug: str
     league_name: str
-    match_title: str # ex: "[LCS] SEN vs FLY — MAPA 1"
+    match_title: str # ex: "[LCS] Sentinels (SEN) vs FlyQuest (FLY) — MAPA 1"
     game_number: int
     
+    # Nomes e Códigos das Equipes
+    blue_team_name: str = ""
+    blue_team_code: str = ""
+    red_team_name: str = ""
+    red_team_code: str = ""
+    winner_name: str = ""
+    loser_name: str = ""
+
     # Moneyline
     winner_code: str
     winner_side: str # "BLUE" ou "RED"
