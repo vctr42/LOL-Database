@@ -7,8 +7,8 @@ class DiscordFormatter:
     @staticmethod
     def build_ansi_dossier(dossier: SettlementDossier) -> str:
         """
-        Gera um painel com formatação ANSI nativa do Discord e emojis temáticos
-        com largura uniforme e alinhamento milimétrico, incluindo First Herald.
+        Gera um painel com formatação ANSI nativa do Discord.
+        Cabeçalho redesenhado com máxima legibilidade, foco esportivo e linhas claras de liquidação.
         """
         blue_team = dossier.winner_code if dossier.winner_side == "BLUE" else dossier.loser_code
         red_team = dossier.winner_code if dossier.winner_side == "RED" else dossier.loser_code
@@ -22,9 +22,6 @@ class DiscordFormatter:
         total_inhibitors = dossier.blue_inhibitors + dossier.red_inhibitors
 
         # Alinhamento de times e números
-        b_kills = f"{blue_team}: {dossier.blue_kills}".ljust(8)
-        r_kills = f"{red_team}: {dossier.red_kills}".ljust(8)
-
         b_towers = f"{blue_team}: {dossier.blue_towers}".ljust(8)
         r_towers = f"{red_team}: {dossier.red_towers}".ljust(8)
 
@@ -44,9 +41,10 @@ class DiscordFormatter:
 
         lines = [
             "```ansi",
-            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m   \u001b[32;1m{dossier.winner_code} ({dossier.winner_side})\u001b[0m  \u001b[30;1m│\u001b[0m  \u001b[37;1m⏱️ DURAÇÃO:\u001b[0m \u001b[33;1m{dossier.duration_formatted}\u001b[0m",
-            f"\u001b[37;1m⚔️ ABATES:\u001b[0m     \u001b[37;1m{str(total_kills).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_kills}\u001b[30;1m│ \u001b[31;1m{r_kills}\u001b[30;1m)\u001b[0m  \u001b[30;1m[+{dossier.kill_spread} {dossier.kill_leader_code}]\u001b[0m",
-            f"\u001b[32;1m🟢 GREEN:\u001b[0m      \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
+            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m   \u001b[32;1m{dossier.winner_code} ({dossier.winner_side})\u001b[0m",
+            f"\u001b[37;1m⏱️  DURAÇÃO:\u001b[0m    \u001b[33;1m{dossier.duration_formatted}\u001b[0m \u001b[30;1m(In-Game Clock Oficial)\u001b[0m",
+            f"\u001b[37;1m⚔️  ABATES:\u001b[0m     \u001b[36;1m{blue_team} {dossier.blue_kills}\u001b[0m \u001b[37;1mx\u001b[0m \u001b[31;1m{dossier.red_kills} {red_team}\u001b[0m  \u001b[30;1m[Total: \u001b[37;1m{total_kills}\u001b[30;1m │ Saldo: \u001b[32;1m+{dossier.kill_spread} {dossier.kill_leader_code}\u001b[30;1m]\u001b[0m",
+            f"\u001b[32;1m🟢 HANDICAP:\u001b[0m   \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
             div_bar,
             f"\u001b[37;1m📊 TOTAIS DE OBJETIVOS\u001b[0m",
             f"   🏰 Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_towers}\u001b[30;1m│ \u001b[31;1m{r_towers}\u001b[30;1m)\u001b[0m",
