@@ -8,10 +8,24 @@ class DiscordFormatter:
     def build_ansi_dossier(dossier: SettlementDossier) -> str:
         """
         Gera um painel com formatação ANSI nativa do Discord.
-        Cabeçalho com largura perfeitamente calculada para não quebrar em nenhuma linha.
+        Coloração semântica rigorosa:
+          - Lado Azul (BLUE)      -> Ciano/Azul (\u001b[36;1m)
+          - Lado Vermelho (RED)   -> Vermelho   (\u001b[31;1m)
+          - Green / Auditoria     -> Verde      (\u001b[32;1m)
+          - Rótulos / Divisores   -> Branco/Cinza (\u001b[37;1m / \u001b[30;1m)
         """
         blue_team = dossier.winner_code if dossier.winner_side == "BLUE" else dossier.loser_code
         red_team = dossier.winner_code if dossier.winner_side == "RED" else dossier.loser_code
+
+        # Helper para colorir time conforme seu lado oficial
+        def color_team(name: str) -> str:
+            if not name or name == "NENHUM":
+                return f"\u001b[30;1m{name}\u001b[0m"
+            if name.strip().upper() == blue_team.strip().upper():
+                return f"\u001b[36;1m{name}\u001b[0m"
+            elif name.strip().upper() == red_team.strip().upper():
+                return f"\u001b[31;1m{name}\u001b[0m"
+            return f"\u001b[37;1m{name}\u001b[0m"
 
         # Cálculos de Totais Consolidados (Para Mercados Over / Under)
         total_kills = dossier.blue_kills + dossier.red_kills
@@ -39,12 +53,40 @@ class DiscordFormatter:
 
         div_bar = "\u001b[30;1m──────────────────────────────────────────────\u001b[0m"
 
+        # Vencedor com a cor do seu respectivo lado
+        winner_color = "\u001b[36;1m" if dossier.winner_side == "BLUE" else "\u001b[31;1m"
+        winner_display = f"{winner_color}{dossier.winner_code} ({dossier.winner_side})\u001b[0m"
+
+        # Formatação de Handicap com as cores dos respectivos times
+        spread = dossier.kill_spread
+        if spread == 0:
+            handicap_colored = f"\u001b[37;1mEMPATE EM KILLS\u001b[0m"
+        else:
+            line_margin = spread - 0.5
+            trailer_margin = spread + 0.5
+            leader_code = dossier.kill_leader_code
+            trailer_code = red_team if leader_code == blue_team else blue_team
+            
+            c_leader = "\u001b[36;1m" if leader_code == blue_team else "\u001b[31;1m"
+            c_trailer = "\u001b[31;1m" if leader_code == blue_team else "\u001b[36;1m"
+            
+            handicap_colored = f"{c_leader}{leader_code} até -{line_margin:.1f}\u001b[0m \u001b[30;1m│\u001b[0m {c_trailer}{trailer_code} a partir de +{trailer_margin:.1f}\u001b[0m"
+
+        # Helper para formatar corrida
+        def format_race(race_text: str) -> str:
+            if not race_text or race_text == "NENHUM":
+                return "\u001b[30;1mNENHUM\u001b[0m"
+            parts = race_text.split(" (")
+            team_part = parts[0]
+            time_part = f"({parts[1]}" if len(parts) > 1 else ""
+            return f"{color_team(team_part)} \u001b[30;1m{time_part}\u001b[0m"
+
         lines = [
             "```ansi",
-            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m    \u001b[32;1m{dossier.winner_code} ({dossier.winner_side})\u001b[0m",
+            f"\u001b[37;1m🏆 VENCEDOR:\u001b[0m    {winner_display}",
             f"\u001b[37;1m⏱️  DURAÇÃO:\u001b[0m     \u001b[33;1m{dossier.duration_formatted}\u001b[0m \u001b[30;1m(In-Game Clock Oficial)\u001b[0m",
             f"\u001b[37;1m⚔️  TOTAL KILLS:\u001b[0m \u001b[37;1m{str(total_kills).ljust(3)}\u001b[0m \u001b[30;1m│\u001b[0m \u001b[36;1m{blue_team}: {str(dossier.blue_kills).rjust(2)}\u001b[0m \u001b[30;1m│\u001b[0m \u001b[31;1m{red_team}: {str(dossier.red_kills).rjust(2)}\u001b[0m",
-            f"\u001b[32;1m🟢 HANDICAP:\u001b[0m    \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
+            f"\u001b[32;1m🟢 HANDICAP:\u001b[0m    {handicap_colored}",
             div_bar,
             f"\u001b[37;1m📊 TOTAIS DE OBJETIVOS\u001b[0m",
             f"   🏰 Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_towers}\u001b[30;1m│ \u001b[31;1m{r_towers}\u001b[30;1m)\u001b[0m",
@@ -54,16 +96,16 @@ class DiscordFormatter:
             f"   💎 Inibidores: \u001b[37;1m{str(total_inhibitors).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_inhibs}\u001b[30;1m│ \u001b[31;1m{r_inhibs}\u001b[30;1m)\u001b[0m",
             div_bar,
             f"\u001b[37;1m⚡ FIRSTS & TIMESTAMPS\u001b[0m",
-            f"   🩸 First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
-            f"   🏰 First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
-            f"   🐲 First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
-            f"   🦀 First Herald: \u001b[33;1m{dossier.first_herald_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_herald_time})\u001b[0m",
-            f"   👾 First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
+            f"   🩸 First Blood:  {color_team(dossier.first_blood_team).ljust(14)} \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
+            f"   🏰 First Tower:  {color_team(dossier.first_tower_team).ljust(14)} \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
+            f"   🐲 First Dragon: {color_team(dossier.first_dragon_team).ljust(14)} \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
+            f"   🦀 First Herald: {color_team(dossier.first_herald_team).ljust(14)} \u001b[30;1m({dossier.first_herald_time})\u001b[0m",
+            f"   👾 First Baron:  {color_team(dossier.first_baron_team).ljust(14)} \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
             div_bar,
             f"\u001b[37;1m🏁 CORRIDAS DE ABATES\u001b[0m",
-            f"   🔥 Corrida 5:    \u001b[32;1m{dossier.race_to_5}\u001b[0m",
-            f"   🔥 Corrida 10:   \u001b[32;1m{dossier.race_to_10}\u001b[0m",
-            f"   🔥 Corrida 15:   \u001b[32;1m{dossier.race_to_15}\u001b[0m",
+            f"   🔥 Corrida 5:    {format_race(dossier.race_to_5)}",
+            f"   🔥 Corrida 10:   {format_race(dossier.race_to_10)}",
+            f"   🔥 Corrida 15:   {format_race(dossier.race_to_15)}",
             "```"
         ]
         return "\n".join(lines)
