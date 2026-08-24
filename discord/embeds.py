@@ -7,8 +7,8 @@ class DiscordFormatter:
     @staticmethod
     def build_ansi_dossier(dossier: SettlementDossier) -> str:
         """
-        Gera um painel com formatação ANSI nativa do Discord.
-        Alinhamento cirúrgico de colunas e espaçamentos sem falhas.
+        Gera um painel com formatação ANSI nativa do Discord e emojis temáticos
+        com largura uniforme e alinhamento milimétrico.
         """
         blue_team = dossier.winner_code if dossier.winner_side == "BLUE" else dossier.loser_code
         red_team = dossier.winner_code if dossier.winner_side == "RED" else dossier.loser_code
@@ -49,22 +49,22 @@ class DiscordFormatter:
             f"\u001b[32;1m🟢 GREEN:\u001b[0m      \u001b[32;1m{dossier.handicap_green_line}\u001b[0m",
             div_bar,
             f"\u001b[37;1m📊 TOTAIS DE OBJETIVOS\u001b[0m",
-            f"   Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_towers}\u001b[30;1m│ \u001b[31;1m{r_towers}\u001b[30;1m)\u001b[0m",
-            f"   Dragões:    \u001b[37;1m{str(total_dragons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_dragons}\u001b[30;1m│ \u001b[31;1m{r_dragons}\u001b[30;1m)\u001b[0m",
-            f"   Barões:     \u001b[37;1m{str(total_barons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_barons}\u001b[30;1m│ \u001b[31;1m{r_barons}\u001b[30;1m)\u001b[0m",
-            f"   Arautos:    \u001b[37;1m{str(total_heralds).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_heralds}\u001b[30;1m│ \u001b[31;1m{r_heralds}\u001b[30;1m)\u001b[0m",
-            f"   Inibidores: \u001b[37;1m{str(total_inhibitors).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_inhibs}\u001b[30;1m│ \u001b[31;1m{r_inhibs}\u001b[30;1m)\u001b[0m",
+            f"   🏰 Torres:     \u001b[37;1m{str(total_towers).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_towers}\u001b[30;1m│ \u001b[31;1m{r_towers}\u001b[30;1m)\u001b[0m",
+            f"   🐉 Dragões:    \u001b[37;1m{str(total_dragons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_dragons}\u001b[30;1m│ \u001b[31;1m{r_dragons}\u001b[30;1m)\u001b[0m",
+            f"   👾 Barões:     \u001b[37;1m{str(total_barons).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_barons}\u001b[30;1m│ \u001b[31;1m{r_barons}\u001b[30;1m)\u001b[0m",
+            f"   🦀 Arautos:    \u001b[37;1m{str(total_heralds).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_heralds}\u001b[30;1m│ \u001b[31;1m{r_heralds}\u001b[30;1m)\u001b[0m",
+            f"   💎 Inibidores: \u001b[37;1m{str(total_inhibitors).rjust(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m{b_inhibs}\u001b[30;1m│ \u001b[31;1m{r_inhibs}\u001b[30;1m)\u001b[0m",
             div_bar,
-            f"\u001b[37;1m⚡ FIRSTS COM TIMESTAMP\u001b[0m",
-            f"   First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
-            f"   First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
-            f"   First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
-            f"   First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
+            f"\u001b[37;1m⚡ FIRSTS & TIMESTAMPS\u001b[0m",
+            f"   🩸 First Blood:  \u001b[33;1m{dossier.first_blood_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_blood_time})\u001b[0m",
+            f"   🏰 First Tower:  \u001b[33;1m{dossier.first_tower_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_tower_time})\u001b[0m",
+            f"   🐲 First Dragon: \u001b[33;1m{dossier.first_dragon_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_dragon_time})\u001b[0m",
+            f"   👾 First Baron:  \u001b[33;1m{dossier.first_baron_team.ljust(5)}\u001b[0m \u001b[30;1m({dossier.first_baron_time})\u001b[0m",
             div_bar,
             f"\u001b[37;1m🏁 CORRIDAS DE ABATES\u001b[0m",
-            f"   Corrida 5:    \u001b[32;1m{dossier.race_to_5}\u001b[0m",
-            f"   Corrida 10:   \u001b[32;1m{dossier.race_to_10}\u001b[0m",
-            f"   Corrida 15:   \u001b[32;1m{dossier.race_to_15}\u001b[0m",
+            f"   🔥 Corrida 5:    \u001b[32;1m{dossier.race_to_5}\u001b[0m",
+            f"   🔥 Corrida 10:   \u001b[32;1m{dossier.race_to_10}\u001b[0m",
+            f"   🔥 Corrida 15:   \u001b[32;1m{dossier.race_to_15}\u001b[0m",
             "```"
         ]
         return "\n".join(lines)
