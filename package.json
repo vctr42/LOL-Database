@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx serve public -p 8888",
     "test": "pytest tests -v",
-    "build": "echo 'Build step complete for Netlify'"
+    "build": "node -e \"console.log('Build complete')\""
   },
   "keywords": ["lol", "esports", "riot-games", "settlement", "betting", "data-lake", "supabase", "netlify"],
   "author": "vctr42",
