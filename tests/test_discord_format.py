@@ -14,7 +14,8 @@ def test_discord_yaml_formatting():
     assert yaml_text.endswith("```")
     assert "Relatorio: \"[CBLOL] PNG vs LLL — MAPA 1\"" in yaml_text
     assert "Duracao Oficial: \"32:45\"" in yaml_text
-    assert "Placar Abates: \"19 x 7\"" in yaml_text
+    assert "Total Abates: \"26 (PNG: 19 | LLL: 7)\"" in yaml_text
+    assert "Torres: \"11 (PNG: 9 | LLL: 2)\"" in yaml_text
     assert "Linha Fracionaria: \"PNG até -11.5 | LLL a partir de +12.5\"" in yaml_text
     assert "First Blood: \"PNG (03:12)\"" in yaml_text
     assert "Zero Doubt Gate: \"APROVADO (100% CONFIANCA)\"" in yaml_text
