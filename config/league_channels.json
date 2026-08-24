@@ -63,6 +63,22 @@
     "color": 3066993,
     "env_webhook": "DISCORD_WEBHOOK_LCP"
   },
+  "lrn": {
+    "name": "LRN",
+    "channel_name": "#lrn",
+    "bot_username": "LRN Settlement Bot",
+    "avatar_url": "",
+    "color": 1752220,
+    "env_webhook": "DISCORD_WEBHOOK_LRN"
+  },
+  "liga-regional-norte": {
+    "name": "LRN",
+    "channel_name": "#lrn",
+    "bot_username": "LRN Settlement Bot",
+    "avatar_url": "",
+    "color": 1752220,
+    "env_webhook": "DISCORD_WEBHOOK_LRN"
+  },
   "default": {
     "name": "GERAL",
     "channel_name": "#liquidação-geral",
