@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoL Settlement Hub • Telemetria Oficial & Data Lake</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%200%20100%20100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">🎮</span>
+      <span class="brand-title">LoL Settlement Hub</span>
+      <span class="badge-live">● RIOT LIVE FEED</span>
+    </div>
+    <nav class="nav-links">
+      <a href="/" class="nav-link active">Dashboard</a>
+      <a href="/h2h.html" class="nav-link">Comparador H2H</a>
+      <a href="/telemetry.html" class="nav-link">Telemetria Jogadores</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <h1>Liquidação & Auditoria de Apostas</h1>
+        <p>Telemetria oficial da Riot Games, in-game clock estrito e persistência em Data Lake</p>
+      </div>
+      <div>
+        <button id="btnRefresh" class="btn btn-primary">🔄 Atualizar Agora</button>
+      </div>
+    </section>
+
+    <!-- LEAGUE FILTER CHIPS -->
+    <div class="league-chips" id="leagueChips">
+      <button class="chip active" data-league="all">Todas as Ligas</button>
+      <button class="chip" data-league="cblol">CBLOL</button>
+      <button class="chip" data-league="lck">LCK</button>
+      <button class="chip" data-league="lpl">LPL</button>
+      <button class="chip" data-league="lec">LEC</button>
+      <button class="chip" data-league="lcs">LCS</button>
+      <button class="chip" data-league="worlds">WORLDS</button>
+      <button class="chip" data-league="msi">MSI</button>
+    </div>
+
+    <!-- LIVE OR RECENT MATCHES CARDS -->
+    <h2 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-cyan);">🔥 Partidas Recentes & Ao Vivo</h2>
+    <div class="grid" id="liveGrid">
+      <div class="card" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        Carregando feeds de telemetria...
+      </div>
+    </div>
+
+    <!-- SETTLEMENT TABLE -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2 style="font-size: 1.1rem;">📑 Dossiês de Liquidação Auditados</h2>
+        <span style="font-size: 0.8rem; color: var(--accent-green);">🛡️ Zero-Doubt Verification: 100% Validado</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Confronto / Mapa</th>
+            <th>Liga</th>
+            <th>Vencedor</th>
+            <th>In-Game Clock</th>
+            <th>Abates</th>
+            <th>Handicap Fracionário (.5)</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="settlementsTableBody">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              Carregando histórico do Data Lake...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- DOSSIER MODAL -->
+  <div class="modal" id="dossierModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Dossiê de Liquidação</h3>
+        <button class="btn" id="btnCloseModal" style="padding: 0.2rem 0.6rem;">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">Bloco Monospaçado Formatado para Discord (YAML)</span>
+          <button class="btn" id="btnCopyYaml">📋 Copiar YAML</button>
+        </div>
+        <pre class="code-block" id="modalYamlContent"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>LoL Settlement Hub & Data Lake • Conectado à CDN Oficial da Riot Games • Netlify Serverless 24/7</p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

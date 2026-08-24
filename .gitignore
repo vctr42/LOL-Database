@@ -1,0 +1,22 @@
+# Dependências e Ambientes
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.env
+
+# Bancos de dados locais de teste
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Netlify local build artifacts
+.netlify/

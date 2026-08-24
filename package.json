@@ -1,0 +1,21 @@
+{
+  "name": "lol-settlement-hub",
+  "version": "1.0.0",
+  "description": "Motor de Liquidação de Apostas, Telemetria Oficial da Riot Games e Data Lake de Esports",
+  "main": "netlify/functions/scan_matches.js",
+  "scripts": {
+    "start": "npx serve public -p 8888",
+    "test": "pytest tests -v",
+    "build": "echo 'Build step complete for Netlify'"
+  },
+  "keywords": ["lol", "esports", "riot-games", "settlement", "betting", "data-lake", "supabase", "netlify"],
+  "author": "vctr42",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
