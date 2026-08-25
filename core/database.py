@@ -287,6 +287,10 @@ class DatabaseManager:
         except Exception as e:
             print(f"[Supabase Sync Warning] Falha na sincronização com Supabase: {e}")
 
+    def get_recent_settlements(self, limit: int = 50, league_slug: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Alias para list_settlements."""
+        return self.list_settlements(limit=limit, league_slug=league_slug)
+
     def list_settlements(self, limit: int = 50, league_slug: Optional[str] = None) -> List[Dict[str, Any]]:
         """Lista liquidações recentes."""
         conn = self._get_sqlite_conn()
