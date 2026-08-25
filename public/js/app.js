@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Botão de Refresh
   btnRefresh.addEventListener("click", () => {
-    fetchSettlements();
+    loadData();
   });
 
   // Botão de Forçar Varredura no Monitor 24/7
@@ -66,8 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
           monitorInfo.textContent = `Última varredura manual: ${new Date().toLocaleTimeString("pt-BR")} • Escaneando frames ao vivo`;
         }
         btnTriggerScan.textContent = "✅ Varredura Concluída";
-        fetchSettlements();
+        await loadData();
       } catch (e) {
+        console.error("Erro ao varrer monitor:", e);
         btnTriggerScan.textContent = "⚠️ Erro";
       }
       setTimeout(() => {
