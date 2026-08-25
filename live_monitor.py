@@ -76,67 +76,13 @@ class LiveGameMonitor:
 
         match_title = f"[{league_name}] {b_name} ({b_code}) vs {r_name} ({r_code}) — SÉRIE FINALIZADA"
 
-        dossier = SettlementDossier(
-            game_id=game_id,
-            match_id=f"match_{league_slug}_{event_id}",
-            league_slug=league_slug,
-            league_name=league_name,
-            patch_version="14.16.1",
-            match_title=match_title,
-            game_number=game_num,
-            blue_team_name=b_name,
-            blue_team_code=b_code,
-            red_team_name=r_name,
-            red_team_code=r_code,
-            winner_name=winner_name,
-            winner_code=winner_code,
-            winner_side=winner_side,
-            loser_name=loser_name,
-            loser_code=loser_code,
-            loser_side=loser_side,
-            duration_seconds=1980,
-            duration_formatted="33:00",
-            blue_kills=b_kills,
-            red_kills=r_kills,
-            kill_leader_code=winner_code,
-            kill_spread=spread,
-            handicap_green_line=green_line,
-            blue_towers=9 if winner_side == "BLUE" else 2,
-            red_towers=2 if winner_side == "BLUE" else 9,
-            blue_dragons=4 if winner_side == "BLUE" else 1,
-            red_dragons=1 if winner_side == "BLUE" else 4,
-            blue_barons=2 if winner_side == "BLUE" else 0,
-            red_barons=0 if winner_side == "BLUE" else 2,
-            blue_heralds=1 if winner_side == "BLUE" else 0,
-            red_heralds=0 if winner_side == "BLUE" else 1,
-            blue_inhibitors=2 if winner_side == "BLUE" else 0,
-            red_inhibitors=0 if winner_side == "BLUE" else 2,
-            first_blood_team=winner_code,
-            first_blood_time="03:20",
-            first_tower_team=winner_code,
-            first_tower_time="13:45",
-            first_dragon_team=winner_code,
-            first_dragon_time="07:50",
-            first_herald_team=winner_code,
-            first_herald_time="15:30",
-            first_baron_team=winner_code,
-            first_baron_time="22:15",
-            race_to_5=f"{winner_code} (09:10)",
-            race_to_10=f"{winner_code} (17:30)",
-            race_to_15=f"{winner_code} (26:40)",
-            audit_passed=True,
-            participants=[]
-        )
-
-        yaml_text = DiscordFormatter.build_yaml_dossier(dossier)
-
-        # 1. Salvar no Supabase & SQLite
-        saved = self.db.save_dossier(dossier, yaml_text)
+        # 1. Salvar partida oficial em lol_matches / lol_games
+        self.db.save_match_summary(match_info)
         self.processed_games.add(str(game_id))
 
-        # 2. Despachar no Discord apenas se for partida nova e autorizada
+        # 2. Despachar no Discord apenas dados oficiais de série (sem simulações)
         if dispatch_discord:
-            res = DiscordRouter.dispatch_settlement(dossier)
+            res = DiscordRouter.dispatch_series_settlement(match_info)
             if res.get("sent"):
                 print(f"🚀 [DISCORD ENVIADO] {match_title} publicado com sucesso em {res.get('channel')}!")
             else:

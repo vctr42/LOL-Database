@@ -47,3 +47,37 @@ class DiscordRouter:
                 "channel": league_info.get("channel_name", "#geral"),
                 "yaml_dossier": yaml_text
             }
+
+    @classmethod
+    def dispatch_series_settlement(cls, match_info: Dict[str, Any]) -> Dict[str, Any]:
+        """Envia o relatório de resultado de série oficial (sem dados fictícios)."""
+        league_slug = match_info.get("league_slug", "default").lower()
+        league_info = LEAGUE_CONFIG.get(league_slug, LEAGUE_CONFIG.get("default", {}))
+        webhook_url = get_league_webhook(league_slug)
+
+        payload = DiscordFormatter.build_series_payload(match_info, league_info)
+
+        if not ENABLE_DISCORD_NOTIFICATIONS or not webhook_url:
+            return {
+                "sent": False,
+                "reason": "Notificações desativadas ou Webhook não configurado",
+                "league": league_slug,
+                "channel": league_info.get("channel_name", "#geral")
+            }
+
+        try:
+            response = requests.post(webhook_url, json=payload, timeout=8)
+            response.raise_for_status()
+            return {
+                "sent": True,
+                "status_code": response.status_code,
+                "league": league_slug,
+                "channel": league_info.get("channel_name", "#geral")
+            }
+        except Exception as e:
+            return {
+                "sent": False,
+                "error": str(e),
+                "league": league_slug,
+                "channel": league_info.get("channel_name", "#geral")
+            }

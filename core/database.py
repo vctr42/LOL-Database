@@ -299,6 +299,62 @@ class DatabaseManager:
         except Exception as e:
             print(f"[Supabase Sync Warning] Falha na sincronização com Supabase: {e}")
 
+    def save_match_summary(self, match_info: Dict[str, Any]) -> bool:
+        """Salva o resumo oficial da série no SQLite e no Supabase (sem dados fictícios)."""
+        try:
+            event_id = match_info.get("event_id") or str(int(time.time()))
+            t_blue = match_info.get("team_blue", {})
+            t_red = match_info.get("team_red", {})
+            
+            # 1. Salvar no SQLite
+            conn = self._get_sqlite_conn()
+            cursor = conn.cursor()
+            cursor.execute("""
+            INSERT OR REPLACE INTO matches (
+                id, league_slug, league_name, team_blue_code, team_blue_name,
+                team_red_code, team_red_name, best_of, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                f"match_{match_info.get('league_slug')}_{event_id}",
+                match_info.get("league_slug", "cblol"),
+                match_info.get("league_name", "CBLOL"),
+                t_blue.get("code", "BLU"),
+                t_blue.get("name", "Blue Team"),
+                t_red.get("code", "RED"),
+                t_red.get("name", "Red Team"),
+                match_info.get("total_games_played", 1) or 1,
+                "completed" if match_info.get("is_completed") else "unstarted"
+            ))
+            conn.commit()
+            conn.close()
+
+            # 2. Sincronizar com Supabase lol_matches
+            if self.mode == "supabase" and SUPABASE_URL and SUPABASE_ANON_KEY:
+                import requests
+                headers = {
+                    "apikey": SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY,
+                    "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY}",
+                    "Content-Type": "application/json",
+                    "Prefer": "resolution=merge-duplicates"
+                }
+                payload = {
+                    "id": f"match_{match_info.get('league_slug')}_{event_id}",
+                    "league_slug": match_info.get("league_slug", "cblol"),
+                    "league_name": match_info.get("league_name", "CBLOL"),
+                    "team_blue_code": t_blue.get("code", "BLU"),
+                    "team_blue_name": t_blue.get("name", "Blue Team"),
+                    "team_red_code": t_red.get("code", "RED"),
+                    "team_red_name": t_red.get("name", "Red Team"),
+                    "best_of": match_info.get("total_games_played", 1) or 1,
+                    "status": "completed" if match_info.get("is_completed") else "unstarted"
+                }
+                requests.post(f"{SUPABASE_URL}/rest/v1/lol_matches", headers=headers, json=payload, timeout=5)
+
+            return True
+        except Exception as e:
+            print(f"[DatabaseManager Error] Erro ao salvar resumo de série: {e}")
+            return False
+
     def get_recent_settlements(self, limit: int = 50, league_slug: Optional[str] = None) -> List[Dict[str, Any]]:
         """Alias para list_settlements."""
         return self.list_settlements(limit=limit, league_slug=league_slug)
