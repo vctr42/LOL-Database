@@ -11,6 +11,8 @@ const STATIC_WEBHOOKS = {
   lpl: "https://discord.com/api/webhooks/1541583542092435566/P2Dd5-ZEVXbgO43UYVZsbt1dZzD5ESUDJNFmYorRSuWhnWwSfDOwAiztyAry2TIg3ErZ",
   lcp: "https://discord.com/api/webhooks/1541583647272861757/F0nnS4LCXDPleA3ERiM3JMModemBkzP4QklTuLUBPwqQ2N5svBqtd4EJtev72hJf_Y3N",
   lrn: "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ",
+  "prime-league": "https://discord.com/api/webhooks/1541821888114987028/Lhalra-uMoz6pDlkrWijq5SQc6Qj66kpPFBPTuRq3o-BIEgQojiFOyhu9ileMVb3gP25",
+  prm: "https://discord.com/api/webhooks/1541821888114987028/Lhalra-uMoz6pDlkrWijq5SQc6Qj66kpPFBPTuRq3o-BIEgQojiFOyhu9ileMVb3gP25",
   default: "https://discord.com/api/webhooks/1541585989342859394/TThI62eXN_n2X13h7uop-eknAQJupFht6G4Dx14HEXoRh5BlizptN2BcuSgWUq6Ydtd0"
 };
 
@@ -24,6 +26,7 @@ function getWebhookForLeague(leagueSlug) {
   if (slug.includes("lpl")) return process.env.DISCORD_WEBHOOK_LPL || STATIC_WEBHOOKS.lpl;
   if (slug.includes("lcp")) return process.env.DISCORD_WEBHOOK_LCP || STATIC_WEBHOOKS.lcp;
   if (slug.includes("lrn") || slug.includes("norte")) return process.env.DISCORD_WEBHOOK_LRN || STATIC_WEBHOOKS.lrn;
+  if (slug.includes("prime") || slug.includes("prm")) return process.env.DISCORD_WEBHOOK_PRIME_LEAGUE || STATIC_WEBHOOKS["prime-league"];
   return process.env.DISCORD_WEBHOOK_DEFAULT || STATIC_WEBHOOKS.default;
 }
 
@@ -35,6 +38,7 @@ function getLeagueColor(leagueSlug) {
   if (slug.includes("lpl")) return 15158332;
   if (slug.includes("lcp")) return 3066993;
   if (slug.includes("lrn") || slug.includes("norte")) return 1752220;
+  if (slug.includes("prime") || slug.includes("prm")) return 16753920;
   return 5793266;
 }
 
@@ -168,6 +172,7 @@ exports.handler = async function (event, context) {
       else if (tournamentName.toLowerCase().includes("lpl")) { leagueSlug = "lpl"; leagueName = "LPL"; }
       else if (tournamentName.toLowerCase().includes("lcp")) { leagueSlug = "lcp"; leagueName = "LCP"; }
       else if (tournamentName.toLowerCase().includes("norte") || tournamentName.toLowerCase().includes("lrn")) { leagueSlug = "lrn"; leagueName = "LRN"; }
+      else if (tournamentName.toLowerCase().includes("prime") || tournamentName.toLowerCase().includes("prm")) { leagueSlug = "prime-league"; leagueName = "Prime League"; }
       else if (t1Name.toLowerCase().includes("academy") || t2Name.toLowerCase().includes("academy")) { leagueSlug = "circuito-desafiante"; leagueName = "Circuito Desafiante"; }
 
       matchesFound.push({

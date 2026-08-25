@@ -89,6 +89,24 @@
     "env_webhook": "DISCORD_WEBHOOK_LRN",
     "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
   },
+  "prime-league": {
+    "name": "Prime League",
+    "channel_name": "#prime-league",
+    "bot_username": "Prime League Settlement Bot",
+    "avatar_url": "",
+    "color": 16753920,
+    "env_webhook": "DISCORD_WEBHOOK_PRIME_LEAGUE",
+    "webhook_url": "https://discord.com/api/webhooks/1541821888114987028/Lhalra-uMoz6pDlkrWijq5SQc6Qj66kpPFBPTuRq3o-BIEgQojiFOyhu9ileMVb3gP25"
+  },
+  "prm": {
+    "name": "Prime League",
+    "channel_name": "#prime-league",
+    "bot_username": "Prime League Settlement Bot",
+    "avatar_url": "",
+    "color": 16753920,
+    "env_webhook": "DISCORD_WEBHOOK_PRIME_LEAGUE",
+    "webhook_url": "https://discord.com/api/webhooks/1541821888114987028/Lhalra-uMoz6pDlkrWijq5SQc6Qj66kpPFBPTuRq3o-BIEgQojiFOyhu9ileMVb3gP25"
+  },
   "default": {
     "name": "GERAL",
     "channel_name": "#liquidação-geral",
