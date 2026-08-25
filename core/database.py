@@ -26,6 +26,12 @@ class DatabaseManager:
         conn = self._get_sqlite_conn()
         cursor = conn.cursor()
         
+        # Migração segura para tabelas já existentes
+        try:
+            cursor.execute("ALTER TABLE games ADD COLUMN patch_version TEXT")
+        except Exception:
+            pass
+        
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS matches (
             id TEXT PRIMARY KEY,

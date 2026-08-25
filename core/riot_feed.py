@@ -21,15 +21,15 @@ class RiotFeedClient:
             self.session.headers["x-api-key"] = self.api_key
 
     def get_live_schedule(self) -> Dict[str, Any]:
-        """Obtém agenda de partidas ao vivo e recentes da Riot Esports API."""
-        url = f"{self.BASE_ESPORTS_API}/getLiveDetails"
-        params = {"hl": RIOT_LOCALE}
-        try:
-            resp = self.session.get(url, params=params, timeout=self.timeout)
-            resp.raise_for_status()
-            return resp.json()
-        except Exception as e:
-            return {"error": str(e), "events": []}
+        """Obtém agenda de partidas ao vivo e recentes da Riot Esports API com fallback."""
+        from core.riot_schedule_parser import RiotScheduleParser
+        matches = RiotScheduleParser.fetch_official_matches()
+        return {"events": matches, "count": len(matches)}
+
+    def get_active_matches(self) -> List[Dict[str, Any]]:
+        """Retorna todas as partidas e confrontos oficiais ativos no momento."""
+        from core.riot_schedule_parser import RiotScheduleParser
+        return RiotScheduleParser.fetch_official_matches()
 
     def get_window(self, game_id: str, starting_time: Optional[str] = None) -> Dict[str, Any]:
         """
