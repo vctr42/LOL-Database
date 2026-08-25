@@ -49,8 +49,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Botão de Refresh
   btnRefresh.addEventListener("click", () => {
-    loadData();
+    fetchSettlements();
   });
+
+  // Botão de Forçar Varredura no Monitor 24/7
+  const btnTriggerScan = document.getElementById("btnTriggerScan");
+  const monitorInfo = document.getElementById("monitorInfo");
+  if (btnTriggerScan) {
+    btnTriggerScan.addEventListener("click", async () => {
+      btnTriggerScan.textContent = "⏳ Varrendo Riot...";
+      btnTriggerScan.disabled = true;
+      try {
+        const resp = await fetch("/api/api_monitor", { method: "POST" });
+        const res = await resp.json();
+        if (monitorInfo) {
+          monitorInfo.textContent = `Última varredura manual: ${new Date().toLocaleTimeString("pt-BR")} • Escaneando frames ao vivo`;
+        }
+        btnTriggerScan.textContent = "✅ Varredura Concluída";
+        fetchSettlements();
+      } catch (e) {
+        btnTriggerScan.textContent = "⚠️ Erro";
+      }
+      setTimeout(() => {
+        btnTriggerScan.textContent = "⚡ Forçar Varredura Agora";
+        btnTriggerScan.disabled = false;
+      }, 3000);
+    });
+  }
 
   async function loadData() {
     try {
