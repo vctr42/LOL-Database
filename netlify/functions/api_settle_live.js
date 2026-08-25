@@ -1,17 +1,29 @@
 // netlify/functions/api_settle_live.js
 const { createClient } = require("@supabase/supabase-js");
 
+const STATIC_WEBHOOKS = {
+  cblol: "https://discord.com/api/webhooks/1541582943665922048/ArBO2i-lfRhbkKMIx1BORDIx9GRwdis2gQDfbUdyKh1ag9F3S1cUvXb4D1WFWUdKl8au",
+  "circuito-desafiante": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy",
+  "cblol-academy": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy",
+  lck: "https://discord.com/api/webhooks/1541583365415768198/YEB8z7jTy-d4krmuIRIAK0Kpx22E_bsqlBJ1wpbsDInHWj_4fgq40uyRLMFfHswUGZM1",
+  "lck-challengers": "https://discord.com/api/webhooks/1541583062859780237/nWxnEbPCZPAq4AqqNLGL7rvF2kUquTQbexOxxMjQkU9TKwSyI2nvqKERSsbPv6e_IC6d",
+  lpl: "https://discord.com/api/webhooks/1541583542092435566/P2Dd5-ZEVXbgO43UYVZsbt1dZzD5ESUDJNFmYorRSuWhnWwSfDOwAiztyAry2TIg3ErZ",
+  lcp: "https://discord.com/api/webhooks/1541583647272861757/F0nnS4LCXDPleA3ERiM3JMModemBkzP4QklTuLUBPwqQ2N5svBqtd4EJtev72hJf_Y3N",
+  lrn: "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ",
+  default: "https://discord.com/api/webhooks/1541585989342859394/TThI62eXN_n2X13h7uop-eknAQJupFht6G4Dx14HEXoRh5BlizptN2BcuSgWUq6Ydtd0"
+};
+
 // Mapeamento de Webhooks por Liga
 function getWebhookForLeague(leagueSlug) {
   const slug = (leagueSlug || "").toLowerCase();
-  if (slug.includes("cblol") && !slug.includes("academy")) return process.env.DISCORD_WEBHOOK_CBLOL || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("circuito") || slug.includes("academy") || slug.includes("desafiante")) return process.env.DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("lck") && !slug.includes("cl") && !slug.includes("challengers")) return process.env.DISCORD_WEBHOOK_LCK || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("lck") && (slug.includes("cl") || slug.includes("challengers"))) return process.env.DISCORD_WEBHOOK_LCK_CL || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("lpl")) return process.env.DISCORD_WEBHOOK_LPL || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("lcp")) return process.env.DISCORD_WEBHOOK_LCP || process.env.DISCORD_WEBHOOK_DEFAULT;
-  if (slug.includes("lrn") || slug.includes("norte")) return process.env.DISCORD_WEBHOOK_LRN || process.env.DISCORD_WEBHOOK_DEFAULT;
-  return process.env.DISCORD_WEBHOOK_DEFAULT;
+  if (slug.includes("cblol") && !slug.includes("academy")) return process.env.DISCORD_WEBHOOK_CBLOL || STATIC_WEBHOOKS.cblol;
+  if (slug.includes("circuito") || slug.includes("academy") || slug.includes("desafiante")) return process.env.DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE || STATIC_WEBHOOKS["circuito-desafiante"];
+  if (slug.includes("lck") && !slug.includes("cl") && !slug.includes("challengers")) return process.env.DISCORD_WEBHOOK_LCK || STATIC_WEBHOOKS.lck;
+  if (slug.includes("lck") && (slug.includes("cl") || slug.includes("challengers"))) return process.env.DISCORD_WEBHOOK_LCK_CL || STATIC_WEBHOOKS["lck-challengers"];
+  if (slug.includes("lpl")) return process.env.DISCORD_WEBHOOK_LPL || STATIC_WEBHOOKS.lpl;
+  if (slug.includes("lcp")) return process.env.DISCORD_WEBHOOK_LCP || STATIC_WEBHOOKS.lcp;
+  if (slug.includes("lrn") || slug.includes("norte")) return process.env.DISCORD_WEBHOOK_LRN || STATIC_WEBHOOKS.lrn;
+  return process.env.DISCORD_WEBHOOK_DEFAULT || STATIC_WEBHOOKS.default;
 }
 
 function getLeagueColor(leagueSlug) {

@@ -5,7 +5,8 @@
     "bot_username": "CBLOL Settlement Bot",
     "avatar_url": "",
     "color": 3447003,
-    "env_webhook": "DISCORD_WEBHOOK_CBLOL"
+    "env_webhook": "DISCORD_WEBHOOK_CBLOL",
+    "webhook_url": "https://discord.com/api/webhooks/1541582943665922048/ArBO2i-lfRhbkKMIx1BORDIx9GRwdis2gQDfbUdyKh1ag9F3S1cUvXb4D1WFWUdKl8au"
   },
   "circuito-desafiante": {
     "name": "Circuito Desafiante",
@@ -13,7 +14,8 @@
     "bot_username": "Circuito Desafiante Bot",
     "avatar_url": "",
     "color": 15105570,
-    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE"
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
+    "webhook_url": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy"
   },
   "cblol-academy": {
     "name": "CBLOL Academy",
@@ -21,7 +23,8 @@
     "bot_username": "CBLOL Academy Bot",
     "avatar_url": "",
     "color": 15105570,
-    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE"
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
+    "webhook_url": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy"
   },
   "lck": {
     "name": "LCK",
@@ -29,7 +32,8 @@
     "bot_username": "LCK Settlement Bot",
     "avatar_url": "",
     "color": 10181046,
-    "env_webhook": "DISCORD_WEBHOOK_LCK"
+    "env_webhook": "DISCORD_WEBHOOK_LCK",
+    "webhook_url": "https://discord.com/api/webhooks/1541583365415768198/YEB8z7jTy-d4krmuIRIAK0Kpx22E_bsqlBJ1wpbsDInHWj_4fgq40uyRLMFfHswUGZM1"
   },
   "lck-challengers": {
     "name": "LCK Challengers",
@@ -37,7 +41,8 @@
     "bot_username": "LCK Challengers Bot",
     "avatar_url": "",
     "color": 9807270,
-    "env_webhook": "DISCORD_WEBHOOK_LCK_CL"
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL",
+    "webhook_url": "https://discord.com/api/webhooks/1541583062859780237/nWxnEbPCZPAq4AqqNLGL7rvF2kUquTQbexOxxMjQkU9TKwSyI2nvqKERSsbPv6e_IC6d"
   },
   "lck_cl": {
     "name": "LCK Challengers",
@@ -45,7 +50,8 @@
     "bot_username": "LCK Challengers Bot",
     "avatar_url": "",
     "color": 9807270,
-    "env_webhook": "DISCORD_WEBHOOK_LCK_CL"
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL",
+    "webhook_url": "https://discord.com/api/webhooks/1541583062859780237/nWxnEbPCZPAq4AqqNLGL7rvF2kUquTQbexOxxMjQkU9TKwSyI2nvqKERSsbPv6e_IC6d"
   },
   "lpl": {
     "name": "LPL",
@@ -53,7 +59,8 @@
     "bot_username": "LPL Settlement Bot",
     "avatar_url": "",
     "color": 15158332,
-    "env_webhook": "DISCORD_WEBHOOK_LPL"
+    "env_webhook": "DISCORD_WEBHOOK_LPL",
+    "webhook_url": "https://discord.com/api/webhooks/1541583542092435566/P2Dd5-ZEVXbgO43UYVZsbt1dZzD5ESUDJNFmYorRSuWhnWwSfDOwAiztyAry2TIg3ErZ"
   },
   "lcp": {
     "name": "LCP",
@@ -61,7 +68,8 @@
     "bot_username": "LCP Settlement Bot",
     "avatar_url": "",
     "color": 3066993,
-    "env_webhook": "DISCORD_WEBHOOK_LCP"
+    "env_webhook": "DISCORD_WEBHOOK_LCP",
+    "webhook_url": "https://discord.com/api/webhooks/1541583647272861757/F0nnS4LCXDPleA3ERiM3JMModemBkzP4QklTuLUBPwqQ2N5svBqtd4EJtev72hJf_Y3N"
   },
   "lrn": {
     "name": "LRN",
@@ -69,7 +77,8 @@
     "bot_username": "LRN Settlement Bot",
     "avatar_url": "",
     "color": 1752220,
-    "env_webhook": "DISCORD_WEBHOOK_LRN"
+    "env_webhook": "DISCORD_WEBHOOK_LRN",
+    "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
   },
   "liga-regional-norte": {
     "name": "LRN",
@@ -77,7 +86,8 @@
     "bot_username": "LRN Settlement Bot",
     "avatar_url": "",
     "color": 1752220,
-    "env_webhook": "DISCORD_WEBHOOK_LRN"
+    "env_webhook": "DISCORD_WEBHOOK_LRN",
+    "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
   },
   "default": {
     "name": "GERAL",
@@ -85,6 +95,7 @@
     "bot_username": "LOL-Database Engine",
     "avatar_url": "",
     "color": 5793266,
-    "env_webhook": "DISCORD_WEBHOOK_DEFAULT"
+    "env_webhook": "DISCORD_WEBHOOK_DEFAULT",
+    "webhook_url": "https://discord.com/api/webhooks/1541585989342859394/TThI62eXN_n2X13h7uop-eknAQJupFht6G4Dx14HEXoRh5BlizptN2BcuSgWUq6Ydtd0"
   }
 }
