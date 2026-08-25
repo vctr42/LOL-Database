@@ -1,5 +1,5 @@
-// public/js/telemetry.js
-// REGRA INCONTESTÁVEL: 100% DADOS REAIS - ZERO DADOS FICTÍCIOS
+const SUPABASE_URL = "https://estkjalhpiwmjyagbjvl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdGtqYWxocGl3bWp5YWdianZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNTA2MjQsImV4cCI6MjA1NTkyNjYyNH0.uBf9N6z_g1w6W2EeqeYjO4P2K_j5M_Q0Pz6gR1S2T3U";
 
 document.addEventListener("DOMContentLoaded", () => {
   const gameSelect = document.getElementById("gameSelect");
@@ -13,12 +13,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function init() {
     try {
-      const resp = await fetch("/api/api_settlements");
-      if (resp.ok) {
-        const data = await resp.json();
-        gamesList = Array.isArray(data) ? data : [];
+      const supaHeaders = { "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}` };
+      const [gamesRes, dossiersRes] = await Promise.allSettled([
+        fetch(`${SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders }),
+        fetch(`${SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders })
+      ]);
+
+      let games = [];
+      let dossiers = [];
+      if (gamesRes.status === "fulfilled" && gamesRes.value.ok) games = await gamesRes.value.json();
+      if (dossiersRes.status === "fulfilled" && dossiersRes.value.ok) dossiers = await dossiersRes.value.json();
+
+      if (games.length > 0) {
+        const dossierMap = {};
+        dossiers.forEach(d => { if (d.game_id) dossierMap[d.game_id] = d; });
+
+        gamesList = games.map(g => {
+          const d = dossierMap[g.id] || {};
+          const summary = d.json_summary || {};
+          return {
+            game_id: g.id,
+            match_title: d.match_title || summary.match_title || `[${(g.league_slug || 'LOL').toUpperCase()}] Confronto Oficial (${g.id})`,
+            team_blue_code: summary.blue_team_code || (g.winner_side === 'BLUE' ? g.winner_code : '--'),
+            team_red_code: summary.red_team_code || (g.winner_side === 'RED' ? g.winner_code : '--'),
+            participants: summary.participants || []
+          };
+        });
       } else {
-        gamesList = [];
+        const resp = await fetch("/api/api_settlements");
+        if (resp.ok) {
+          const data = await resp.json();
+          gamesList = Array.isArray(data) ? data : [];
+        }
       }
     } catch (e) {
       gamesList = [];
