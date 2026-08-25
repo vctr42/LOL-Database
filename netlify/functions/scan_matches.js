@@ -192,7 +192,7 @@ exports.handler = async function (event, context) {
       
       // Checar se já foi liquidado no Supabase
       if (supabase) {
-        const { data: existing } = await supabase.from("games").select("id").eq("id", gameId).maybeSingle();
+        const { data: existing } = await supabase.from("lol_games").select("id").eq("id", gameId).maybeSingle();
         if (existing) {
           continue; // Já foi liquidado anteriormente
         }
@@ -248,7 +248,7 @@ exports.handler = async function (event, context) {
 
       // 1. Salvar no Supabase
       if (supabase) {
-        await supabase.from("games").upsert({
+        await supabase.from("lol_games").upsert({
           id: gameId,
           match_id: dossier.match_id,
           game_number: dossier.game_number,
@@ -276,6 +276,15 @@ exports.handler = async function (event, context) {
           kill_spread_margin: spread,
           handicap_green_line: `${dossier.winner_code} até -${(spread - 0.5).toFixed(1)}`,
           audit_passed: true
+        });
+
+        await supabase.from("settlement_dossiers").upsert({
+          id: `dossier_${gameId}`,
+          game_id: gameId,
+          league_slug: dossier.league_slug,
+          match_title: dossier.match_title,
+          yaml_dossier: "",
+          json_summary: dossier
         });
       }
 

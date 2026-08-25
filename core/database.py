@@ -240,9 +240,9 @@ class DatabaseManager:
                 "Content-Type": "application/json",
                 "Prefer": "resolution=merge-duplicates"
             }
-            # Upsert game
-            url = f"{SUPABASE_URL}/rest/v1/games"
-            payload = {
+            # Upsert lol_games
+            url_games = f"{SUPABASE_URL}/rest/v1/lol_games"
+            payload_game = {
                 "id": dossier.game_id,
                 "match_id": dossier.match_id,
                 "game_number": dossier.game_number,
@@ -283,7 +283,19 @@ class DatabaseManager:
                 "handicap_green_line": dossier.handicap_green_line,
                 "audit_passed": dossier.audit_passed
             }
-            requests.post(url, headers=headers, json=payload, timeout=5)
+            requests.post(url_games, headers=headers, json=payload_game, timeout=5)
+
+            # Upsert settlement_dossiers
+            url_dossiers = f"{SUPABASE_URL}/rest/v1/settlement_dossiers"
+            payload_dossier = {
+                "id": f"dossier_{dossier.game_id}",
+                "game_id": dossier.game_id,
+                "league_slug": dossier.league_slug,
+                "match_title": dossier.match_title,
+                "yaml_dossier": yaml_text,
+                "json_summary": dossier.model_dump()
+            }
+            requests.post(url_dossiers, headers=headers, json=payload_dossier, timeout=5)
         except Exception as e:
             print(f"[Supabase Sync Warning] Falha na sincronização com Supabase: {e}")
 
