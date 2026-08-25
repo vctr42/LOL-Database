@@ -25,6 +25,7 @@ const apiSettlements = require("./netlify/functions/api_settlements.js");
 const apiH2H = require("./netlify/functions/api_h2h.js");
 const scanMatches = require("./netlify/functions/scan_matches.js");
 const apiMonitor = require("./netlify/functions/api_monitor.js");
+const apiSettleLive = require("./netlify/functions/api_settle_live.js");
 
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
@@ -34,12 +35,21 @@ const server = http.createServer(async (req, res) => {
   if (pathname.startsWith("/api/") || pathname.startsWith("/.netlify/functions/")) {
     const functionName = pathname.replace(/^\/(api|\.netlify\/functions)\//, "").split("/")[0];
 
+    // Ler body para requisições POST/PUT
+    let rawBody = "";
+    if (req.method === "POST" || req.method === "PUT") {
+      await new Promise((resolve) => {
+        req.on("data", (chunk) => (rawBody += chunk));
+        req.on("end", resolve);
+      });
+    }
+
     const event = {
       httpMethod: req.method,
       queryStringParameters: parsedUrl.query,
       headers: req.headers,
       path: pathname,
-      body: null
+      body: rawBody
     };
 
     let handler = null;
@@ -47,6 +57,7 @@ const server = http.createServer(async (req, res) => {
     else if (functionName === "api_h2h") handler = apiH2H.handler;
     else if (functionName === "scan_matches") handler = scanMatches.handler;
     else if (functionName === "api_monitor") handler = apiMonitor.handler;
+    else if (functionName === "api_settle_live") handler = apiSettleLive.handler;
 
     if (handler) {
       try {

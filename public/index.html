@@ -44,8 +44,9 @@
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;" id="monitorInfo">Varredura contínua a cada 15s • CBLOL, LCK, LPL, LRN, Circuito Desafiante • Envio imediato no Discord</div>
         </div>
       </div>
-      <div style="flex-shrink: 0;">
-        <button id="btnTriggerScan" class="btn" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.8rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; white-space: nowrap;">⚡ Forçar Varredura Agora</button>
+      <div style="flex-shrink: 0; display: flex; gap: 0.5rem;">
+        <button id="btnOpenSettleModal" class="btn" style="background: rgba(0, 210, 255, 0.15); color: #00d2ff; border: 1px solid rgba(0, 210, 255, 0.4); font-size: 0.8rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; white-space: nowrap;">🎯 Liquidar Mapa ao Vivo</button>
+        <button id="btnTriggerScan" class="btn" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.8rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; white-space: nowrap;">⚡ Varredura Automática</button>
       </div>
     </div>
 
@@ -111,6 +112,82 @@
           <button class="btn" id="btnCopyYaml">📋 Copiar YAML</button>
         </div>
         <pre class="code-block" id="modalYamlContent"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK SETTLE MODAL -->
+  <div class="modal" id="quickSettleModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>🎯 Liquidar Mapa ao Vivo & Despachar no Discord</h3>
+        <button class="btn" id="btnCloseSettleModal" style="padding: 0.2rem 0.6rem;">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formQuickSettle" style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Liga Oficial:</label>
+              <select id="settleLeague" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+                <option value="lrn">LRN (Liga Regional Norte)</option>
+                <option value="cblol">CBLOL</option>
+                <option value="circuito-desafiante">Circuito Desafiante</option>
+                <option value="lck">LCK</option>
+                <option value="lck-challengers">LCK Challengers</option>
+                <option value="lpl">LPL</option>
+                <option value="lcp">LCP</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Número do Mapa:</label>
+              <input type="number" id="settleGameNum" value="3" min="1" max="5" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--accent-cyan);">Time Azul (Nome & Sigla):</label>
+              <input type="text" id="settleBlueName" value="Zeu5 Esports" placeholder="Nome Completo" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 0.3rem;">
+              <input type="text" id="settleBlueCode" value="Z5" placeholder="Sigla" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--accent-red);">Time Vermelho (Nome & Sigla):</label>
+              <input type="text" id="settleRedName" value="Fuego" placeholder="Nome Completo" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 0.3rem;">
+              <input type="text" id="settleRedCode" value="FUE" placeholder="Sigla" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Vencedor Oficial:</label>
+              <select id="settleWinnerSide" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+                <option value="RED">Lado Vermelho (RED)</option>
+                <option value="BLUE">Lado Azul (BLUE)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Kills Time Azul:</label>
+              <input type="number" id="settleBlueKills" value="12" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Kills Time Vermelho:</label>
+              <input type="number" id="settleRedKills" value="21" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">Duração Oficial (MM:SS):</label>
+              <input type="text" id="settleDuration" value="33:00" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-muted);">First Blood:</label>
+              <input type="text" id="settleFirstBlood" value="FUE" style="width: 100%; padding: 0.5rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+          </div>
+
+          <button type="submit" id="btnSubmitSettle" class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.7rem; font-weight: bold; background: linear-gradient(135deg, #00ff88, #00d2ff); color: #000;">🚀 Liquidar e Disparar no Discord Agora</button>
+        </form>
       </div>
     </div>
   </div>
