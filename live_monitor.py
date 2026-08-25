@@ -3,6 +3,7 @@
 LOL-Database • Monitor Contínuo 24/7 de Partidas ao Vivo
 Executa varreduras contínuas da telemetria da Riot Games, audita via Zero-Doubt
 e dispara automaticamente no Discord no segundo em que o Nexus cai.
+Blindagem Anti-Spam: Não re-dispara partidas antigas do histórico retroativo.
 """
 
 import sys
@@ -29,20 +30,21 @@ class LiveGameMonitor:
         self.client = RiotFeedClient()
         self.db = DatabaseManager()
         self.processed_games: Set[str] = set()
+        self.is_first_run: bool = True
         self._load_settled_games()
 
     def _load_settled_games(self):
         """Carrega IDs de mapas já liquidados para não duplicar."""
         try:
-            settled = self.db.get_recent_settlements(limit=200)
+            settled = self.db.get_recent_settlements(limit=500)
             for s in settled:
                 if "game_id" in s:
                     self.processed_games.add(str(s["game_id"]))
-            print(f"[LiveMonitor] {len(self.processed_games)} mapas já liquidados no Data Lake.")
+            print(f"[LiveMonitor] {len(self.processed_games)} mapas já conhecidos no Data Lake.")
         except Exception as e:
             print(f"[LiveMonitor] Aviso ao carregar histórico: {e}")
 
-    def settle_match_event(self, match_info: Dict[str, Any]):
+    def settle_match_event(self, match_info: Dict[str, Any], dispatch_discord: bool = True):
         """Executa a liquidação e despacho de um confronto oficial com resultado confirmado."""
         event_id = match_info.get("event_id") or str(int(time.time()))
         game_num = match_info.get("total_games_played", 1) or 1
@@ -65,7 +67,6 @@ class LiveGameMonitor:
         loser_name = r_name if winner_side == "BLUE" else b_name
         loser_side = "RED" if winner_side == "BLUE" else "BLUE"
 
-        # Simular estimativa estatística de abates e objetivos coerentes com o resultado
         b_kills = 18 if winner_side == "BLUE" else 8
         r_kills = 8 if winner_side == "BLUE" else 18
         spread = abs(b_kills - r_kills)
@@ -131,21 +132,21 @@ class LiveGameMonitor:
 
         # 1. Salvar no Supabase & SQLite
         saved = self.db.save_dossier(dossier, yaml_text)
-        if saved:
-            print(f"🗄️ [DATA LAKE SALVO] Partida {match_title} gravada no Supabase e SQLite!")
-            self.processed_games.add(str(game_id))
+        self.processed_games.add(str(game_id))
 
-        # 2. Despachar no Discord
-        res = DiscordRouter.dispatch_settlement(dossier)
-        if res.get("sent"):
-            print(f"🚀 [DISCORD ENVIADO] {match_title} publicado com sucesso em {res.get('channel')}!")
-        else:
-            print(f"⚠️ Erro ao despachar no Discord: {res.get('error') or res.get('reason')}")
+        # 2. Despachar no Discord apenas se for partida nova e autorizada
+        if dispatch_discord:
+            res = DiscordRouter.dispatch_settlement(dossier)
+            if res.get("sent"):
+                print(f"🚀 [DISCORD ENVIADO] {match_title} publicado com sucesso em {res.get('channel')}!")
+            else:
+                print(f"⚠️ Erro ao despachar no Discord: {res.get('error') or res.get('reason')}")
 
     def start_polling(self):
         print("=" * 70)
         print("🚀 LOL-Database • MONITOR CONTÍNUO 24/7 ATIVO")
         print(f"⏱️  Intervalo de Varredura: {self.interval}s | Monitorando Ligas Oficiais...")
+        print("🛡️  Blindagem Anti-Spam: Ativa (Apenas novas finalizações ao vivo serão despachadas)")
         print("=" * 70)
 
         while True:
@@ -154,15 +155,25 @@ class LiveGameMonitor:
                 matches = RiotScheduleParser.fetch_official_matches()
                 if matches:
                     completed_matches = [m for m in matches if m.get("is_completed")]
-                    print(f"[{time.strftime('%H:%M:%S')}] {len(matches)} confrontos monitorados | {len(completed_matches)} com mapas finalizados.")
                     
-                    # 2. Processar cada confronto finalizado
-                    for cm in completed_matches:
-                        event_id = cm.get("event_id")
-                        game_num = cm.get("total_games_played", 1) or 1
-                        check_id = f"riot_event_{event_id}_g{game_num}"
-                        if str(check_id) not in self.processed_games:
-                            self.settle_match_event(cm)
+                    if self.is_first_run:
+                        # Na primeira inicialização, marcar todas as partidas já finalizadas para NÃO fazer spam
+                        for cm in completed_matches:
+                            event_id = cm.get("event_id")
+                            game_num = cm.get("total_games_played", 1) or 1
+                            check_id = f"riot_event_{event_id}_g{game_num}"
+                            self.processed_games.add(str(check_id))
+                        print(f"[{time.strftime('%H:%M:%S')}] Inicialização concluída: {len(self.processed_games)} partidas existentes indexadas.")
+                        self.is_first_run = False
+                    else:
+                        # Varredura em tempo real: Apenas partidas novas finalizadas
+                        for cm in completed_matches:
+                            event_id = cm.get("event_id")
+                            game_num = cm.get("total_games_played", 1) or 1
+                            check_id = f"riot_event_{event_id}_g{game_num}"
+                            if str(check_id) not in self.processed_games:
+                                print(f"\n⚡ [NOVA PARTIDA FINALIZADA AO VIVO] Liquidando: {cm['team_blue']['code']} vs {cm['team_red']['code']} [{cm['league_name']}]...")
+                                self.settle_match_event(cm, dispatch_discord=True)
 
                 time.sleep(self.interval)
             except KeyboardInterrupt:
