@@ -145,8 +145,9 @@ exports.handler = async function (event, context) {
         if (leagueSlug.includes("cblol")) leagueSlug = "cblol";
         else if (leagueSlug.includes("prime") || leagueSlug.includes("prm")) leagueSlug = "prime-league";
         else if (leagueSlug.includes("rift") || leagueSlug.includes("legends")) leagueSlug = "rift-legends";
-        else if (leagueSlug.includes("norte") || leagueSlug.includes("lrn")) leagueSlug = "lrn";
-        else if (leagueSlug.includes("desafiante") || leagueSlug.includes("academy")) leagueSlug = "circuito-desafiante";
+        else if (leagueSlug.includes("norte") || leagueSlug.includes("lrn") || leagueSlug.includes("north") || leagueSlug.includes("south")) leagueSlug = "lrn";
+        else if (leagueSlug.includes("desafiante") || leagueSlug.includes("academy") || leagueSlug === "cd") leagueSlug = "circuito-desafiante";
+        else if (leagueSlug.includes("challengers") || leagueSlug.includes("lck-cl")) leagueSlug = "lck-challengers";
 
         const teamMatches = [...text.matchAll(/\{"__typename":"MatchTeam"[^}]*?"name":"([^"]+)"[^}]*?"code":"([^"]+)"[^}]*?"result":\{"__typename":"TeamResult","gameWins":(\d+)/g)];
 

@@ -17,6 +17,15 @@
     "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
     "webhook_url": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy"
   },
+  "cd": {
+    "name": "Circuito Desafiante",
+    "channel_name": "#circuito-desafiante",
+    "bot_username": "Circuito Desafiante Bot",
+    "avatar_url": "",
+    "color": 15105570,
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
+    "webhook_url": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy"
+  },
   "cblol-academy": {
     "name": "CBLOL Academy",
     "channel_name": "#circuito-desafiante",
@@ -25,6 +34,15 @@
     "color": 15105570,
     "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
     "webhook_url": "https://discord.com/api/webhooks/1541582601473630290/FafPgDou17r4zwwB5KsvhNkjsdw_cUVprNv1D7764AacpRFAv-U9y5ppxMFakzzjkCPy"
+  },
+  "lck-challengers-league": {
+    "name": "LCK Challengers",
+    "channel_name": "#lck-challengers",
+    "bot_username": "LCK Challengers Bot",
+    "avatar_url": "",
+    "color": 9807270,
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL",
+    "webhook_url": "https://discord.com/api/webhooks/1541583062859780237/nWxnEbPCZPAq4AqqNLGL7rvF2kUquTQbexOxxMjQkU9TKwSyI2nvqKERSsbPv6e_IC6d"
   },
   "lck": {
     "name": "LCK",
@@ -81,6 +99,24 @@
     "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
   },
   "liga-regional-norte": {
+    "name": "LRN",
+    "channel_name": "#lrn",
+    "bot_username": "LRN Settlement Bot",
+    "avatar_url": "",
+    "color": 1752220,
+    "env_webhook": "DISCORD_WEBHOOK_LRN",
+    "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
+  },
+  "north-regional-league": {
+    "name": "LRN",
+    "channel_name": "#lrn",
+    "bot_username": "LRN Settlement Bot",
+    "avatar_url": "",
+    "color": 1752220,
+    "env_webhook": "DISCORD_WEBHOOK_LRN",
+    "webhook_url": "https://discord.com/api/webhooks/1541595512442982460/IjYT1oXwhh8Y56Fi57nrIkQLUjyFX8BuFWS7jox8A-78LZXs8rzIiMzg3G8Y6woH_tpZ"
+  },
+  "south-regional-league": {
     "name": "LRN",
     "channel_name": "#lrn",
     "bot_username": "LRN Settlement Bot",

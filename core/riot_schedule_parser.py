@@ -60,10 +60,12 @@ class RiotScheduleParser:
                     league_slug = "prime-league"
                 elif "rift" in league_slug or "legends" in league_slug:
                     league_slug = "rift-legends"
-                elif "norte" in league_slug or "lrn" in league_slug:
+                elif "norte" in league_slug or "lrn" in league_slug or "north" in league_slug or "south" in league_slug:
                     league_slug = "lrn"
-                elif "desafiante" in league_slug or "academy" in league_slug:
+                elif "desafiante" in league_slug or "academy" in league_slug or league_slug == "cd":
                     league_slug = "circuito-desafiante"
+                elif "challengers" in league_slug or "lck-cl" in league_slug:
+                    league_slug = "lck-challengers"
 
                 # Extrair Tournament
                 tourney_match = re.search(r'"tournament":\{"__typename":"Tournament"[^}]*?"name":"([^"]+)"', chunk)

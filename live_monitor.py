@@ -58,8 +58,8 @@ class LiveGameMonitor:
         b_name, b_code, b_wins = t_blue.get("name", "Blue Team"), t_blue.get("code", "BLU"), t_blue.get("wins", 0)
         r_name, r_code, r_wins = t_red.get("name", "Red Team"), t_red.get("code", "RED"), t_red.get("wins", 0)
 
-        winner_side = match_info.get("winner_side", "BLUE")
-        winner_code = match_info.get("winner_code") or (b_code if winner_side == "BLUE" else r_code)
+        winner_side = match_info.get("winner_side") or "BLUE"
+        winner_code = match_info.get("winner_code") or (b_code if winner_side == "BLUE" else r_code) or b_code
         winner_name = b_name if winner_side == "BLUE" else r_name
         loser_code = r_code if winner_side == "BLUE" else b_code
         loser_name = r_name if winner_side == "BLUE" else b_name
