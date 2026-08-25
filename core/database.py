@@ -49,6 +49,7 @@ class DatabaseManager:
             match_id TEXT NOT NULL,
             game_number INTEGER NOT NULL,
             league_slug TEXT NOT NULL,
+            patch_version TEXT,
             winner_code TEXT NOT NULL,
             winner_side TEXT NOT NULL,
             duration_seconds INTEGER NOT NULL,
@@ -156,7 +157,7 @@ class DatabaseManager:
             # Upsert Game
             cursor.execute("""
             INSERT OR REPLACE INTO games (
-                id, match_id, game_number, league_slug, winner_code, winner_side,
+                id, match_id, game_number, league_slug, patch_version, winner_code, winner_side,
                 duration_seconds, duration_formatted, blue_kills, red_kills, blue_gold, red_gold,
                 blue_towers, red_towers, blue_dragons, red_dragons, blue_barons, red_barons,
                 blue_heralds, red_heralds, blue_inhibitors, red_inhibitors,
@@ -165,7 +166,7 @@ class DatabaseManager:
                 first_baron_team, first_baron_time, race_to_5_kills, race_to_10_kills, race_to_15_kills,
                 kill_spread_margin, handicap_green_line, audit_passed, raw_window_payload
             ) VALUES (
-                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?,
@@ -175,7 +176,7 @@ class DatabaseManager:
                 ?, ?, ?, ?
             )
             """, (
-                dossier.game_id, dossier.match_id, dossier.game_number, dossier.league_slug, dossier.winner_code, dossier.winner_side,
+                dossier.game_id, dossier.match_id, dossier.game_number, dossier.league_slug, getattr(dossier, "patch_version", "14.16.1"), dossier.winner_code, dossier.winner_side,
                 dossier.duration_seconds, dossier.duration_formatted, dossier.blue_kills, dossier.red_kills, 0, 0,
                 dossier.blue_towers, dossier.red_towers, dossier.blue_dragons, dossier.red_dragons, dossier.blue_barons, dossier.red_barons,
                 dossier.blue_heralds, dossier.red_heralds, dossier.blue_inhibitors, dossier.red_inhibitors,
@@ -240,6 +241,7 @@ class DatabaseManager:
                 "match_id": dossier.match_id,
                 "game_number": dossier.game_number,
                 "league_slug": dossier.league_slug,
+                "patch_version": getattr(dossier, "patch_version", "14.16.1"),
                 "winner_code": dossier.winner_code,
                 "winner_side": dossier.winner_side,
                 "duration_seconds": dossier.duration_seconds,

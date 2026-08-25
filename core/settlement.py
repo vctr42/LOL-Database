@@ -31,6 +31,9 @@ class SettlementDossier(BaseModel):
     match_title: str # ex: "[LCS] Sentinels (SEN) vs FlyQuest (FLY) — MAPA 1"
     game_number: int
     
+    # Metadados de Jogo & Patch
+    patch_version: str = ""
+
     # Nomes e Códigos das Equipes
     blue_team_name: str = ""
     blue_team_code: str = ""
@@ -167,6 +170,7 @@ class SettlementCompiler:
         firsts_and_races = cls._extract_events_and_races(frames, blue_code, red_code)
         
         # Telemetria dos 10 Jogadores
+        patch_version = window_data.get("gameVersion") or window_data.get("patch") or (frames[0].get("gameVersion") if frames else "") or "14.16.1"
         participants_telemetry = cls._extract_participants(window_data, details_data, blue_code, red_code, blue_kills, red_kills, audit.blue_gold, audit.red_gold)
 
         return SettlementDossier(
@@ -174,6 +178,7 @@ class SettlementCompiler:
             match_id=match_id,
             league_slug=league_slug.lower(),
             league_name=league_name,
+            patch_version=str(patch_version),
             match_title=match_title,
             game_number=game_number,
             winner_code=winner_code,
