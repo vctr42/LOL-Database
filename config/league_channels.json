@@ -107,6 +107,24 @@
     "env_webhook": "DISCORD_WEBHOOK_PRIME_LEAGUE",
     "webhook_url": "https://discord.com/api/webhooks/1541821888114987028/Lhalra-uMoz6pDlkrWijq5SQc6Qj66kpPFBPTuRq3o-BIEgQojiFOyhu9ileMVb3gP25"
   },
+  "rift-legends": {
+    "name": "Rift Legends",
+    "channel_name": "#rift-legends",
+    "bot_username": "Rift Legends Settlement Bot",
+    "avatar_url": "",
+    "color": 10040319,
+    "env_webhook": "DISCORD_WEBHOOK_RIFT_LEGENDS",
+    "webhook_url": "https://discord.com/api/webhooks/1541822317489815562/f6ZUDH8sq2kA-tyQQWoi29T6jNklSDCRLJ1n1TZWxvsWxK6d3aJCNPnJmud8Vm_ldddX"
+  },
+  "rl": {
+    "name": "Rift Legends",
+    "channel_name": "#rift-legends",
+    "bot_username": "Rift Legends Settlement Bot",
+    "avatar_url": "",
+    "color": 10040319,
+    "env_webhook": "DISCORD_WEBHOOK_RIFT_LEGENDS",
+    "webhook_url": "https://discord.com/api/webhooks/1541822317489815562/f6ZUDH8sq2kA-tyQQWoi29T6jNklSDCRLJ1n1TZWxvsWxK6d3aJCNPnJmud8Vm_ldddX"
+  },
   "default": {
     "name": "GERAL",
     "channel_name": "#liquidação-geral",
