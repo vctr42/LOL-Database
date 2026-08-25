@@ -68,20 +68,30 @@ exports.handler = async function (event, context) {
       red_heralds = 1,
       blue_inhibitors = 2,
       red_inhibitors = 0,
-      first_blood_team = "AZUL",
-      first_blood_time = "03:15",
-      first_tower_team = "AZUL",
-      first_tower_time = "14:10",
-      first_dragon_team = "AZUL",
-      first_dragon_time = "07:30",
-      first_herald_team = "RED",
-      first_herald_time = "15:20",
-      first_baron_team = "AZUL",
-      first_baron_time = "22:40",
-      race_to_5 = "AZUL (08:30)",
-      race_to_10 = "AZUL (18:10)",
-      race_to_15 = "AZUL (27:00)"
+      first_blood_team = null,
+      first_blood_time = "00:00",
+      first_tower_team = null,
+      first_tower_time = "00:00",
+      first_dragon_team = null,
+      first_dragon_time = "00:00",
+      first_herald_team = null,
+      first_herald_time = "00:00",
+      first_baron_team = null,
+      first_baron_time = "00:00",
+      race_to_5 = null,
+      race_to_10 = null,
+      race_to_15 = null
     } = body;
+
+    const fbTeam = first_blood_team || winner_code;
+    const ftTeam = first_tower_team || winner_code;
+    const fdTeam = first_dragon_team || winner_code;
+    const fhTeam = first_herald_team || winner_code;
+    const fbaronTeam = first_baron_team || (winner_side === "BLUE" && blue_barons > 0 ? blue_team_code : red_barons > 0 ? red_team_code : "NENHUM");
+
+    const r5 = race_to_5 || (blue_kills >= 5 ? `${blue_team_code} (10:00)` : red_kills >= 5 ? `${red_team_code} (10:00)` : "NENHUM");
+    const r10 = race_to_10 || (blue_kills >= 10 ? `${blue_team_code} (18:00)` : red_kills >= 10 ? `${red_team_code} (18:00)` : "NENHUM");
+    const r15 = race_to_15 || (blue_kills >= 15 ? `${blue_team_code} (25:00)` : red_kills >= 15 ? `${red_team_code} (25:00)` : "NENHUM");
 
     const totalKills = blue_kills + red_kills;
     const totalTowers = blue_towers + red_towers;
@@ -140,16 +150,16 @@ exports.handler = async function (event, context) {
       `   💎 Inibidores: \u001b[37;1m${String(totalInhibs).padStart(2)}\u001b[0m  \u001b[30;1m(\u001b[36;1m${bInhibs}\u001b[30;1m│ \u001b[31;1m${rInhibs}\u001b[30;1m)\u001b[0m`,
       divBar,
       `\u001b[37;1m⚡ FIRSTS & TIMESTAMPS\u001b[0m`,
-      `   🩸 First Blood:  ${colorTeam(first_blood_team)} \u001b[30;1m(${first_blood_time})\u001b[0m`,
-      `   🏰 First Tower:  ${colorTeam(first_tower_team)} \u001b[30;1m(${first_tower_time})\u001b[0m`,
-      `   🐲 First Dragon: ${colorTeam(first_dragon_team)} \u001b[30;1m(${first_dragon_time})\u001b[0m`,
-      `   🦀 First Herald: ${colorTeam(first_herald_team)} \u001b[30;1m(${first_herald_time})\u001b[0m`,
-      `   👾 First Baron:  ${colorTeam(first_baron_team)} \u001b[30;1m(${first_baron_time})\u001b[0m`,
+      `   🩸 First Blood:  ${colorTeam(fbTeam)} \u001b[30;1m(${first_blood_time})\u001b[0m`,
+      `   🏰 First Tower:  ${colorTeam(ftTeam)} \u001b[30;1m(${first_tower_time})\u001b[0m`,
+      `   🐲 First Dragon: ${colorTeam(fdTeam)} \u001b[30;1m(${first_dragon_time})\u001b[0m`,
+      `   🦀 First Herald: ${colorTeam(fhTeam)} \u001b[30;1m(${first_herald_time})\u001b[0m`,
+      `   👾 First Baron:  ${colorTeam(fbaronTeam)} \u001b[30;1m(${first_baron_time})\u001b[0m`,
       divBar,
       `\u001b[37;1m🏁 CORRIDAS DE ABATES\u001b[0m`,
-      `   🔥 Corrida 5:    ${colorTeam(race_to_5.split(" ")[0])} \u001b[30;1m(${race_to_5.split("(")[1] || ""}\u001b[0m`,
-      `   🔥 Corrida 10:   ${colorTeam(race_to_10.split(" ")[0])} \u001b[30;1m(${race_to_10.split("(")[1] || ""}\u001b[0m`,
-      `   🔥 Corrida 15:   ${colorTeam(race_to_15.split(" ")[0])} \u001b[30;1m(${race_to_15.split("(")[1] || ""}\u001b[0m`,
+      `   🔥 Corrida 5:    ${colorTeam(r5.split(" ")[0])} \u001b[30;1m(${r5.split("(")[1] || ""}\u001b[0m`,
+      `   🔥 Corrida 10:   ${colorTeam(r10.split(" ")[0])} \u001b[30;1m(${r10.split("(")[1] || ""}\u001b[0m`,
+      `   🔥 Corrida 15:   ${colorTeam(r15.split(" ")[0])} \u001b[30;1m(${r15.split("(")[1] || ""}\u001b[0m`,
       "```"
     ];
 
