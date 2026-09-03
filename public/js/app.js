@@ -143,8 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (list.length === 0) {
       liveGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
-          Nenhuma partida registrada para o filtro selecionado.
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 1rem; color: var(--text-muted);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎮</div>
+          <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">Nenhuma partida oficial liquidada no momento</p>
+          <p style="font-size: 0.85rem;">O monitor autônomo está ativo. Assim que um mapa for concluído com auditoria do Nexus, ele aparecerá aqui com telemetria 100% real.</p>
         </div>
       `;
       settlementsTableBody.innerHTML = `
