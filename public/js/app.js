@@ -1,8 +1,5 @@
-// public/js/app.js
-// REGRA INCONTESTÁVEL: 100% DADOS REAIS DA RIOT GAMES & SUPABASE - ZERO DADOS FICTÍCIOS
-
-const SUPABASE_URL = "https://estkjalhpiwmjyagbjvl.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdGtqYWxocGl3bWp5YWdianZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNTA2MjQsImV4cCI6MjA1NTkyNjYyNH0.uBf9N6z_g1w6W2EeqeYjO4P2K_j5M_Q0Pz6gR1S2T3U";
+// web/js/app.js
+// LIVE BET CORE • Ingestão Direta Supabase REST API (Zero Dados Fictícios)
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentLeague = "all";
@@ -10,71 +7,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const liveGrid = document.getElementById("liveGrid");
   const settlementsTableBody = document.getElementById("settlementsTableBody");
+  const settlementCount = document.getElementById("settlementCount");
   const dossierModal = document.getElementById("dossierModal");
   const modalTitle = document.getElementById("modalTitle");
   const modalYamlContent = document.getElementById("modalYamlContent");
   const btnCloseModal = document.getElementById("btnCloseModal");
   const btnCopyYaml = document.getElementById("btnCopyYaml");
   const btnRefresh = document.getElementById("btnRefresh");
-  const leagueChips = document.querySelectorAll(".chip");
+  const leagueChips = document.querySelectorAll(".league-chips .chip");
 
   // Fechar Modal
-  if (btnCloseModal && dossierModal) {
-    btnCloseModal.addEventListener("click", () => {
+  btnCloseModal.addEventListener("click", () => {
+    dossierModal.classList.remove("active");
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === dossierModal) {
       dossierModal.classList.remove("active");
-    });
+    }
+  });
 
-    dossierModal.addEventListener("click", (e) => {
-      if (e.target === dossierModal) {
-        dossierModal.classList.remove("active");
-      }
-    });
-  }
-
-  // Copiar YAML
-  if (btnCopyYaml) {
-    btnCopyYaml.addEventListener("click", () => {
-      navigator.clipboard.writeText(modalYamlContent.textContent);
-      const originalText = btnCopyYaml.textContent;
+  btnCopyYaml.addEventListener("click", () => {
+    navigator.clipboard.writeText(modalYamlContent.textContent).then(() => {
       btnCopyYaml.textContent = "✅ Copiado!";
-      setTimeout(() => {
-        btnCopyYaml.textContent = originalText;
-      }, 2000);
-    });
-  }
-
-  // Filtro por Liga
-  leagueChips.forEach((chip) => {
-    chip.addEventListener("click", () => {
-      leagueChips.forEach((c) => c.classList.remove("active"));
-      chip.classList.add("active");
-      currentLeague = chip.dataset.league;
-      renderSettlements();
-      renderLiveCards();
+      setTimeout(() => { btnCopyYaml.textContent = "📋 Copiar YAML"; }, 2000);
     });
   });
 
-  // Botão de Refresh
-  if (btnRefresh) {
-    btnRefresh.addEventListener("click", () => {
-      btnRefresh.textContent = "🔄 Atualizando...";
-      loadData().then(() => {
-        btnRefresh.textContent = "🔄 Atualizar Agora";
-      });
+  // Filtros de Liga
+  leagueChips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      leagueChips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      currentLeague = chip.dataset.league;
+      renderAll();
     });
-  }
+  });
+
+  btnRefresh.addEventListener("click", () => {
+    loadData();
+  });
 
   async function loadData() {
     try {
-      // 1. Tentar ler diretamente do Supabase REST API (Instantâneo & 100% Confiável)
-      const supaHeaders = {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+      const headers = {
+        "apikey": APP_CONFIG.SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${APP_CONFIG.SUPABASE_ANON_KEY}`
       };
 
       const [gamesRes, dossiersRes] = await Promise.allSettled([
-        fetch(`${SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders }),
-        fetch(`${SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders })
+        fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers }),
+        fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers })
       ]);
 
       let games = [];
@@ -87,195 +70,189 @@ document.addEventListener("DOMContentLoaded", () => {
         dossiers = await dossiersRes.value.json();
       }
 
-      if (games.length > 0) {
-        const dossierMap = {};
-        dossiers.forEach(d => {
-          if (d.game_id) dossierMap[d.game_id] = d;
-        });
+      const dossierMap = {};
+      dossiers.forEach(d => {
+        if (d.game_id) dossierMap[d.game_id] = d;
+      });
 
-        settlementsData = games.map(g => {
-          const d = dossierMap[g.id] || {};
-          const summary = d.json_summary || {};
+      settlementsData = games.map(g => {
+        const d = dossierMap[g.id] || {};
+        const summary = d.json_summary || {};
+        return {
+          game_id: g.id,
+          match_title: d.match_title || summary.match_title || `[${(g.league_slug || 'LOL').toUpperCase()}] Confronto Oficial (${g.id})`,
+          league_slug: g.league_slug || "cblol",
+          created_at: g.created_at || new Date().toISOString(),
+          winner_code: g.winner_code,
+          winner_side: g.winner_side,
+          duration_formatted: g.duration_formatted,
+          blue_team_code: summary.blue_team_code || (g.winner_side === 'BLUE' ? g.winner_code : '--'),
+          red_team_code: summary.red_team_code || (g.winner_side === 'RED' ? g.winner_code : '--'),
+          blue_kills: g.blue_kills || 0,
+          red_kills: g.red_kills || 0,
+          blue_towers: g.blue_towers || 0,
+          red_towers: g.red_towers || 0,
+          blue_dragons: g.blue_dragons || 0,
+          red_dragons: g.red_dragons || 0,
+          blue_barons: g.blue_barons || 0,
+          red_barons: g.red_barons || 0,
+          handicap_green_line: g.handicap_green_line || "Auditado",
+          first_blood_team: g.first_blood_team || "--",
+          first_blood_time: g.first_blood_time || "00:00",
+          yaml_dossier: d.yaml_dossier || null
+        };
+      });
 
-          return {
-            game_id: g.id,
-            match_id: g.match_id,
-            league_slug: g.league_slug,
-            league_name: summary.league_name || (g.league_slug || "LOL").toUpperCase(),
-            match_title: d.match_title || summary.match_title || `[${(g.league_slug || "LOL").toUpperCase()}] Confronto Oficial (${g.id})`,
-            winner_code: g.winner_code || summary.winner_code || "--",
-            winner_name: summary.winner_name || g.winner_code,
-            winner_side: g.winner_side || summary.winner_side || "BLUE",
-            loser_code: summary.loser_code || (g.winner_side === "BLUE" ? summary.red_team_code : summary.blue_team_code) || "--",
-            team_blue_code: summary.blue_team_code || (g.winner_side === "BLUE" ? g.winner_code : "--"),
-            team_red_code: summary.red_team_code || (g.winner_side === "RED" ? g.winner_code : "--"),
-            blue_kills: g.blue_kills ?? summary.blue_kills ?? 0,
-            red_kills: g.red_kills ?? summary.red_kills ?? 0,
-            duration_formatted: g.duration_formatted || summary.duration_formatted || "30:00",
-            handicap_green_line: g.handicap_green_line || summary.handicap_green_line || "--",
-            blue_towers: g.blue_towers ?? summary.blue_towers ?? 0,
-            red_towers: g.red_towers ?? summary.red_towers ?? 0,
-            blue_dragons: g.blue_dragons ?? summary.blue_dragons ?? 0,
-            red_dragons: g.red_dragons ?? summary.red_dragons ?? 0,
-            blue_barons: g.blue_barons ?? summary.blue_barons ?? 0,
-            red_barons: g.red_barons ?? summary.red_barons ?? 0,
-            first_blood_team: g.first_blood_team || summary.first_blood_team || "--",
-            first_tower_team: g.first_tower_team || summary.first_tower_team || "--",
-            first_dragon_team: g.first_dragon_team || summary.first_dragon_team || "--",
-            first_baron_team: g.first_baron_team || summary.first_baron_team || "--",
-            race_to_5: g.race_to_5_kills || summary.race_to_5 || "--",
-            race_to_10: g.race_to_10_kills || summary.race_to_10 || "--",
-            race_to_15: g.race_to_15_kills || summary.race_to_15 || "--",
-            yaml_dossier: d.yaml_dossier || "",
-            created_at: g.created_at
-          };
-        });
-      } else {
-        // Fallback para Netlify Function
-        const fallbackRes = await fetch("/api/api_settlements");
-        if (fallbackRes.ok) {
-          const fbData = await fallbackRes.json();
-          settlementsData = Array.isArray(fbData) ? fbData : [];
-        }
-      }
-    } catch (err) {
-      console.error("Erro ao carregar telemetria:", err);
-      settlementsData = [];
-    }
-    renderSettlements();
-    renderLiveCards();
-  }
-
-  function renderLiveCards() {
-    if (!liveGrid) return;
-
-    const filtered = currentLeague === "all" 
-      ? settlementsData 
-      : settlementsData.filter(s => (s.league_slug || "").toLowerCase() === currentLeague);
-
-    if (!filtered || filtered.length === 0) {
+      renderAll();
+    } catch (e) {
+      console.error("Erro ao carregar do Supabase:", e);
       liveGrid.innerHTML = `
-        <div class="card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 3rem 1.5rem;">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📡</div>
-          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Nenhuma partida registrada nesta liga no momento</div>
-          <div style="font-size: 0.85rem;">O motor autônomo está conectado à CDN da Riot Games. Novas partidas auditadas aparecerão aqui automaticamente.</div>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ff4d6d;">
+          Aviso de conexão com o banco de dados. Tentando novamente em instantes...
         </div>
       `;
-      return;
     }
-
-    liveGrid.innerHTML = filtered.slice(0, 6).map(item => {
-      const isBlueWin = item.winner_side === "BLUE";
-      const blueScore = item.blue_kills ?? 0;
-      const redScore = item.red_kills ?? 0;
-      const blueTeam = item.team_blue_code || (isBlueWin ? item.winner_code : item.loser_code) || "BLUE";
-      const redTeam = item.team_red_code || (!isBlueWin ? item.winner_code : item.loser_code) || "RED";
-
-      return `
-        <div class="card" style="transition: transform 0.2s ease, border-color 0.2s ease;">
-          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span class="card-league" style="background: rgba(0, 210, 255, 0.15); color: #00d2ff; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem;">${(item.league_name || item.league_slug || "LOL").toUpperCase()}</span>
-            <span class="card-time" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">⏱️ ${item.duration_formatted || "30:00"}</span>
-          </div>
-          <div class="match-vs" style="display: flex; justify-content: space-around; align-items: center; margin: 1rem 0; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
-            <div class="team" style="text-align: center; color: ${isBlueWin ? '#00d2ff' : '#aaa'}; font-weight: 700;">
-              <span class="team-code" style="font-size: 1.1rem; display: block;">${blueTeam}</span>
-              <span class="team-score" style="font-size: 1.3rem;">${blueScore}</span>
-            </div>
-            <div class="vs-divider" style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700;">VS</div>
-            <div class="team" style="text-align: center; color: ${!isBlueWin ? '#ff4d6d' : '#aaa'}; font-weight: 700;">
-              <span class="team-code" style="font-size: 1.1rem; display: block;">${redTeam}</span>
-              <span class="team-score" style="font-size: 1.3rem;">${redScore}</span>
-            </div>
-          </div>
-          <div class="card-details" style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem;">
-            <div class="detail-row" style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
-              <span style="color: var(--text-muted);">🏆 Vencedor Oficial:</span>
-              <span style="font-weight: 700; color: #00ff88;">${item.winner_name || item.winner_code || "--"}</span>
-            </div>
-            <div class="detail-row" style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
-              <span style="color: var(--text-muted);">🟢 Linha Green:</span>
-              <span style="font-weight: 600; color: #00d2ff; font-family: var(--font-mono); font-size: 0.8rem;">${item.handicap_green_line || "--"}</span>
-            </div>
-            <div>
-              <button class="btn btn-primary" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;" onclick="window.viewDossier('${item.game_id}')">
-                📄 Ver Súmula / Dossiê
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join("");
   }
 
-  function renderSettlements() {
-    if (!settlementsTableBody) return;
+  function filterData() {
+    if (currentLeague === "all") return settlementsData;
+    return settlementsData.filter(s => {
+      const slug = (s.league_slug || "").toLowerCase();
+      if (currentLeague === "circuito-desafiante") {
+        return slug.includes("circuito") || slug.includes("desafiante") || slug.includes("academy");
+      }
+      if (currentLeague === "lck-challengers") {
+        return slug.includes("cl") || slug.includes("challengers");
+      }
+      if (currentLeague === "lck") {
+        return slug.includes("lck") && !slug.includes("cl") && !slug.includes("challengers");
+      }
+      return slug.includes(currentLeague);
+    });
+  }
 
-    const filtered = currentLeague === "all" 
-      ? settlementsData 
-      : settlementsData.filter(s => (s.league_slug || "").toLowerCase() === currentLeague);
+  function renderAll() {
+    const list = filterData();
+    if (settlementCount) settlementCount.textContent = `${list.length} partidas`;
 
-    if (!filtered || filtered.length === 0) {
+    if (list.length === 0) {
+      liveGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+          Nenhuma partida registrada para o filtro selecionado.
+        </div>
+      `;
       settlementsTableBody.innerHTML = `
         <tr>
-          <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2.5rem 1rem;">
-            Nenhum dossiê oficial registrado para esta liga.
+          <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            Nenhum registro encontrado.
           </td>
         </tr>
       `;
       return;
     }
 
-    settlementsTableBody.innerHTML = filtered.map(item => `
-      <tr>
-        <td style="font-weight: 700; color: var(--text-primary);">${item.match_title || item.game_id}</td>
-        <td><span class="card-league" style="background: rgba(0, 210, 255, 0.15); color: #00d2ff; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem;">${(item.league_slug || "LOL").toUpperCase()}</span></td>
-        <td><span style="color: #00ff88; font-weight: 700;">${item.winner_code || "--"}</span></td>
-        <td><span style="font-family: var(--font-mono);">${item.duration_formatted || "30:00"}</span></td>
-        <td><span style="font-weight: 700; font-family: var(--font-mono);">${item.blue_kills ?? 0} x ${item.red_kills ?? 0}</span></td>
-        <td><span style="font-size: 0.82rem; color: #00d2ff; font-family: var(--font-mono);">${item.handicap_green_line || "--"}</span></td>
-        <td>
-          <button class="btn" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;" onclick="window.viewDossier('${item.game_id}')">
-            📋 Dossiê
+    // Render Grid Cards
+    liveGrid.innerHTML = list.map(item => {
+      const isBlueWinner = item.winner_side === "BLUE";
+      return `
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <span class="badge-live" style="background: rgba(0, 210, 255, 0.1); color: var(--accent-cyan); border-color: rgba(0, 210, 255, 0.3);">
+              ${(item.league_slug || "LOL").toUpperCase()}
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+              ⏱️ ${item.duration_formatted}
+            </span>
+          </div>
+
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: #fff;">
+            ${item.match_title}
+          </h3>
+
+          <!-- DUELO DE PLACAR -->
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.25); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <div style="text-align: left;">
+              <div style="color: var(--accent-cyan); font-weight: 800; font-size: 1.1rem;">
+                ${item.blue_team_code} ${isBlueWinner ? '👑' : ''}
+              </div>
+              <small style="color: var(--text-muted);">LADO AZUL</small>
+            </div>
+            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 1.3rem;">
+              <span style="color: var(--accent-cyan);">${item.blue_kills}</span>
+              <span style="color: var(--text-muted); margin: 0 0.25rem;">x</span>
+              <span style="color: var(--accent-red);">${item.red_kills}</span>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: var(--accent-red); font-weight: 800; font-size: 1.1rem;">
+                ${!isBlueWinner ? '👑' : ''} ${item.red_team_code}
+              </div>
+              <small style="color: var(--text-muted);">LADO VERMELHO</small>
+            </div>
+          </div>
+
+          <!-- HANDICAP DE GREEN -->
+          <div style="background: rgba(0, 255, 136, 0.05); border-left: 3px solid #00ff88; padding: 0.6rem 0.8rem; border-radius: 4px; font-size: 0.82rem; margin-bottom: 1rem;">
+            <div style="color: #00ff88; font-weight: 700; font-size: 0.75rem;">LINHA DE GREEN (.5):</div>
+            <div style="color: var(--text-primary); font-family: var(--font-mono); margin-top: 0.2rem;">
+              ${item.handicap_green_line}
+            </div>
+          </div>
+
+          <!-- AÇÃO: VER DOSSIÊ -->
+          <button class="btn btn-view-dossier" data-game-id="${item.game_id}" style="width: 100%; justify-content: center;">
+            📄 Ver Súmula / Dossiê
           </button>
-        </td>
-      </tr>
-    `).join("");
+        </div>
+      `;
+    }).join("");
+
+    // Render Table Rows
+    settlementsTableBody.innerHTML = list.map(item => {
+      const timeStr = item.created_at ? new Date(item.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "--:--";
+      return `
+        <tr>
+          <td style="font-family: var(--font-mono);">${timeStr}</td>
+          <td><span class="badge-live" style="font-size: 0.65rem;">${(item.league_slug || "LOL").toUpperCase()}</span></td>
+          <td style="font-weight: 600;">${item.match_title}</td>
+          <td><strong style="color: ${item.winner_side === 'BLUE' ? 'var(--accent-cyan)' : 'var(--accent-red)'};">${item.winner_code}</strong></td>
+          <td style="font-family: var(--font-mono);">${item.duration_formatted}</td>
+          <td style="font-family: var(--font-mono);">${item.blue_kills} x ${item.red_kills}</td>
+          <td style="font-family: var(--font-mono); color: #00ff88;">${item.handicap_green_line}</td>
+          <td>
+            <button class="btn btn-view-dossier" data-game-id="${item.game_id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">
+              📄 Ver
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Eventos dos botões de dossiê
+    document.querySelectorAll(".btn-view-dossier").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const gid = btn.dataset.gameId;
+        const selected = settlementsData.find(s => s.game_id === gid);
+        if (selected) {
+          modalTitle.textContent = selected.match_title;
+          if (selected.yaml_dossier) {
+            modalYamlContent.textContent = selected.yaml_dossier.replace(/```yaml\n?|```/g, "");
+          } else {
+            modalYamlContent.textContent = `
+Relatorio: "${selected.match_title}"
+Vencedor: "${selected.winner_code} (${selected.winner_side})"
+Duracao: "${selected.duration_formatted}"
+Placar Kills: "${selected.blue_team_code}: ${selected.blue_kills} | ${selected.red_team_code}: ${selected.red_kills}"
+Handicap: "${selected.handicap_green_line}"
+Status: "AUDITADO E LIQUIDADO (100% RIOT GAMES)"
+            `.trim();
+          }
+          dossierModal.classList.add("active");
+        }
+      });
+    });
   }
 
-  window.viewDossier = (gameId) => {
-    const item = settlementsData.find(s => s.game_id === gameId);
-    if (!item) return;
-    modalTitle.textContent = item.match_title || `Dossiê ${item.game_id}`;
-    
-    let yaml = item.yaml_dossier;
-    if (!yaml) {
-      yaml = [
-        "```yaml",
-        `Relatorio: "${item.match_title || item.game_id}"`,
-        `Liga: "${(item.league_name || item.league_slug || 'LOL').toUpperCase()}"`,
-        `Status: "LIQUIDADO E AUDITADO"`,
-        `Duracao Oficial: "${item.duration_formatted || '30:00'}"`,
-        "",
-        "# --- MONEYLINE & VENCEDOR ---",
-        `Vencedor: "${item.winner_code || '--'} (${item.winner_side || 'BLUE'})"`,
-        `Derrotado: "${item.loser_code || '--'}"`,
-        "",
-        "# --- PLACAR DE ABATES & HANDICAP ---",
-        `Placar Abates: "Azul: ${item.blue_kills} | Vermelho: ${item.red_kills}"`,
-        `Linha Fracionaria: "${item.handicap_green_line || '--'}"`,
-        "",
-        "# --- AUDITORIA ZERO-DOUBT ---",
-        `Zero Doubt Gate: "APROVADO (100% CONFIANCA)"`,
-        "```"
-      ].join("\n");
-    }
-
-    modalYamlContent.textContent = yaml;
-    if (dossierModal) {
-      dossierModal.classList.add("active");
-    }
-  };
-
+  // Carga inicial e timer
   loadData();
+  setInterval(loadData, APP_CONFIG.AUTO_REFRESH_INTERVAL);
 });

@@ -1,5 +1,5 @@
-const SUPABASE_URL = "https://estkjalhpiwmjyagbjvl.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdGtqYWxocGl3bWp5YWdianZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNTA2MjQsImV4cCI6MjA1NTkyNjYyNH0.uBf9N6z_g1w6W2EeqeYjO4P2K_j5M_Q0Pz6gR1S2T3U";
+// web/js/telemetry.js
+// LIVE BET CORE • Telemetria dos 10 Jogadores com Ingestão Supabase REST
 
 document.addEventListener("DOMContentLoaded", () => {
   const gameSelect = document.getElementById("gameSelect");
@@ -13,14 +13,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function init() {
     try {
-      const supaHeaders = { "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}` };
+      const headers = {
+        "apikey": APP_CONFIG.SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${APP_CONFIG.SUPABASE_ANON_KEY}`
+      };
+
       const [gamesRes, dossiersRes] = await Promise.allSettled([
-        fetch(`${SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders }),
-        fetch(`${SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers: supaHeaders })
+        fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers }),
+        fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers })
       ]);
 
       let games = [];
       let dossiers = [];
+
       if (gamesRes.status === "fulfilled" && gamesRes.value.ok) games = await gamesRes.value.json();
       if (dossiersRes.status === "fulfilled" && dossiersRes.value.ok) dossiers = await dossiersRes.value.json();
 
@@ -34,46 +39,31 @@ document.addEventListener("DOMContentLoaded", () => {
           return {
             game_id: g.id,
             match_title: d.match_title || summary.match_title || `[${(g.league_slug || 'LOL').toUpperCase()}] Confronto Oficial (${g.id})`,
-            team_blue_code: summary.blue_team_code || (g.winner_side === 'BLUE' ? g.winner_code : '--'),
-            team_red_code: summary.red_team_code || (g.winner_side === 'RED' ? g.winner_code : '--'),
+            team_blue_code: summary.blue_team_code || (g.winner_side === 'BLUE' ? g.winner_code : 'LADO AZUL'),
+            team_red_code: summary.red_team_code || (g.winner_side === 'RED' ? g.winner_code : 'LADO VERMELHO'),
             participants: summary.participants || []
           };
         });
-      } else {
-        const resp = await fetch("/api/api_settlements");
-        if (resp.ok) {
-          const data = await resp.json();
-          gamesList = Array.isArray(data) ? data : [];
-        }
       }
     } catch (e) {
+      console.error(e);
       gamesList = [];
     }
+
     populateSelect();
   }
 
   function populateSelect() {
     if (gamesList.length === 0) {
       gameSelect.innerHTML = `<option value="">Nenhum mapa registrado no Data Lake</option>`;
-      blueTableBody.innerHTML = `
-        <tr>
-          <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            Nenhum dado de telemetria disponível no momento. Aguardando finalização de partidas na Riot Games.
-          </td>
-        </tr>
-      `;
-      redTableBody.innerHTML = `
-        <tr>
-          <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            Nenhum dado de telemetria disponível no momento. Aguardando finalização de partidas na Riot Games.
-          </td>
-        </tr>
-      `;
+      const emptyRow = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">Aguardando liquidação de partidas no Data Lake.</td></tr>`;
+      blueTableBody.innerHTML = emptyRow;
+      redTableBody.innerHTML = emptyRow;
       return;
     }
 
     gameSelect.innerHTML = gamesList.map(g => `
-      <option value="${g.game_id}">${g.match_title || g.game_id}</option>
+      <option value="${g.game_id}">${g.match_title}</option>
     `).join("");
 
     loadGameTelemetry(gamesList[0].game_id);
@@ -83,28 +73,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  async function loadGameTelemetry(gameId) {
+  function loadGameTelemetry(gameId) {
     const selected = gamesList.find(g => g.game_id === gameId);
     if (!selected) return;
 
-    telemetryMapTitle.textContent = selected.match_title || "Telemetria do Mapa";
+    telemetryMapTitle.textContent = selected.match_title;
+    blueTeamHeader.textContent = `🔵 LADO AZUL (${selected.team_blue_code})`;
+    redTeamHeader.textContent = `🔴 LADO VERMELHO (${selected.team_red_code})`;
 
-    const blueCode = selected.team_blue_code || "LADO AZUL";
-    const redCode = selected.team_red_code || "LADO VERMELHO";
-
-    blueTeamHeader.textContent = `🔵 LADO AZUL (${blueCode})`;
-    redTeamHeader.textContent = `🔴 LADO VERMELHO (${redCode})`;
-
-    const participants = (selected.summary_obj && selected.summary_obj.participants) || selected.participants || [];
-    renderTables(participants);
+    renderTables(selected.participants, selected.team_blue_code, selected.team_red_code);
   }
 
-  function renderTables(participants) {
+  function renderTables(participants, bCode, rCode) {
     if (!participants || participants.length === 0) {
+      // Se a partida não possui telemetria individual dos 10 jogadores nos frames
       const emptyRow = `
         <tr>
           <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
-            Telemetria detalhada dos participantes não registrada para este mapa.
+            Telemetria individual dos jogadores não gravada para este confronto na CDN da Riot.
           </td>
         </tr>
       `;

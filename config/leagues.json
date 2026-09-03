@@ -1,0 +1,98 @@
+{
+  "cblol": {
+    "name": "CBLOL",
+    "channel_name": "#cblol",
+    "bot_username": "CBLOL Settlement Bot",
+    "color": 3447003,
+    "env_webhook": "DISCORD_WEBHOOK_CBLOL",
+    "aliases": ["cblol", "cb-lol"]
+  },
+  "circuito-desafiante": {
+    "name": "Circuito Desafiante",
+    "channel_name": "#circuito-desafiante",
+    "bot_username": "Circuito Desafiante Bot",
+    "color": 15105570,
+    "env_webhook": "DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE",
+    "aliases": ["circuito-desafiante", "cd", "cblol-academy", "cblol_academy"]
+  },
+  "lck": {
+    "name": "LCK",
+    "channel_name": "#lck",
+    "bot_username": "LCK Settlement Bot",
+    "color": 10181046,
+    "env_webhook": "DISCORD_WEBHOOK_LCK",
+    "aliases": ["lck"]
+  },
+  "lck-challengers": {
+    "name": "LCK Challengers",
+    "channel_name": "#lck-challengers",
+    "bot_username": "LCK Challengers Bot",
+    "color": 9807270,
+    "env_webhook": "DISCORD_WEBHOOK_LCK_CL",
+    "aliases": ["lck-challengers", "lck_cl", "lck-cl", "lck-challengers-league"]
+  },
+  "lpl": {
+    "name": "LPL",
+    "channel_name": "#lpl",
+    "bot_username": "LPL Settlement Bot",
+    "color": 15158332,
+    "env_webhook": "DISCORD_WEBHOOK_LPL",
+    "aliases": ["lpl"]
+  },
+  "lcp": {
+    "name": "LCP",
+    "channel_name": "#lcp",
+    "bot_username": "LCP Settlement Bot",
+    "color": 3066993,
+    "env_webhook": "DISCORD_WEBHOOK_LCP",
+    "aliases": ["lcp"]
+  },
+  "lrn": {
+    "name": "LRN",
+    "channel_name": "#lrn",
+    "bot_username": "LRN Settlement Bot",
+    "color": 1752220,
+    "env_webhook": "DISCORD_WEBHOOK_LRN",
+    "aliases": ["lrn", "liga-regional-norte", "north-regional-league", "south-regional-league"]
+  },
+  "prime-league": {
+    "name": "Prime League",
+    "channel_name": "#prime-league",
+    "bot_username": "Prime League Settlement Bot",
+    "color": 16753920,
+    "env_webhook": "DISCORD_WEBHOOK_PRIME_LEAGUE",
+    "aliases": ["prime-league", "prm", "prime_league"]
+  },
+  "rift-legends": {
+    "name": "Rift Legends",
+    "channel_name": "#rift-legends",
+    "bot_username": "Rift Legends Settlement Bot",
+    "color": 10040319,
+    "env_webhook": "DISCORD_WEBHOOK_RIFT_LEGENDS",
+    "aliases": ["rift-legends", "rl", "rift_legends", "hellenic-legends-league"]
+  },
+  "lec": {
+    "name": "LEC",
+    "channel_name": "#livebet-geral",
+    "bot_username": "LEC Settlement Bot",
+    "color": 15844367,
+    "env_webhook": "DISCORD_WEBHOOK_DEFAULT",
+    "aliases": ["lec"]
+  },
+  "lcs": {
+    "name": "LCS",
+    "channel_name": "#livebet-geral",
+    "bot_username": "LCS Settlement Bot",
+    "color": 3447003,
+    "env_webhook": "DISCORD_WEBHOOK_DEFAULT",
+    "aliases": ["lcs", "nacl"]
+  },
+  "default": {
+    "name": "Geral",
+    "channel_name": "#livebet-geral",
+    "bot_username": "LIVE BET CORE Engine",
+    "color": 5793266,
+    "env_webhook": "DISCORD_WEBHOOK_DEFAULT",
+    "aliases": ["default", "geral"]
+  }
+}

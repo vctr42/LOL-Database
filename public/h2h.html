@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comparador Head-to-Head • LOL-Database</title>
+  <title>Comparador Head-to-Head (H2H) • LIVE BET CORE</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%200%20100%20100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
 </head>
@@ -11,9 +11,9 @@
   <!-- NAVBAR -->
   <header class="navbar">
     <div class="nav-brand">
-      <span class="brand-icon">🎮</span>
-      <span class="brand-title">LOL-Database</span>
-      <span class="badge-live">● ANALYTICS ENGINE</span>
+      <span style="font-size: 1.5rem;">🎮</span>
+      <span class="brand-title">LIVE BET CORE</span>
+      <span class="badge-live">● RIOT LIVE FEED</span>
     </div>
     <nav class="nav-links">
       <a href="index.html" class="nav-link">Dashboard</a>
@@ -22,98 +22,131 @@
     </nav>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="container">
     <section class="hero">
       <div>
         <h1>Comparador Head-to-Head (H2H)</h1>
-        <p>Histórico estatístico de confronto direto e métricas pré-jogo do Data Lake</p>
+        <p>Estatísticas de confronto direto, taxas de Firsts e histórico real do Data Lake</p>
       </div>
     </section>
 
-    <!-- SEARCH & SELECTORS -->
+    <!-- SEARCH PANEL -->
     <div class="card" style="margin-bottom: 2rem;">
-      <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+      <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 200px;">
-          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Equipe A (Ex: T1, PNG, G2, FLY)</label>
-          <input type="text" id="teamAInput" value="T1" style="width: 100%; padding: 0.6rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-weight: 700; font-size: 1.1rem; text-transform: uppercase;">
+          <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Sigla Equipe A</label>
+          <input type="text" id="teamAInput" placeholder="Ex: PNG, LOUD, T1, GEN" style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); color: #fff; padding: 0.65rem 1rem; border-radius: 8px; font-weight: 700; font-size: 1rem; text-transform: uppercase;">
         </div>
-        <div style="font-weight: 800; font-size: 1.2rem; color: var(--accent-cyan); padding-top: 1.2rem;">VS</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-muted); padding-bottom: 0.5rem;">VS</div>
         <div style="flex: 1; min-width: 200px;">
-          <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Equipe B (Ex: GEN, LLL, FNC, TL)</label>
-          <input type="text" id="teamBInput" value="GEN" style="width: 100%; padding: 0.6rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-weight: 700; font-size: 1.1rem; text-transform: uppercase;">
+          <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Sigla Equipe B</label>
+          <input type="text" id="teamBInput" placeholder="Ex: VKS, FUR, BLG, HLE" style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); color: #fff; padding: 0.65rem 1rem; border-radius: 8px; font-weight: 700; font-size: 1rem; text-transform: uppercase;">
         </div>
-        <div style="padding-top: 1.2rem;">
-          <button id="btnCompare" class="btn btn-primary" style="padding: 0.65rem 1.5rem;">⚔️ Comparar H2H</button>
+        <div>
+          <button id="btnCompare" class="btn btn-primary" style="height: 44px; padding: 0 1.5rem;">⚔️ Comparar Equipes</button>
         </div>
       </div>
     </div>
 
     <!-- COMPARISON RESULTS -->
-    <div id="h2hResultsArea">
-      <div class="grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 2rem;">
-        <!-- STATS TEAM A -->
-        <div class="card" id="cardTeamA">
-          <h2 id="nameTeamA" style="font-size: 1.5rem; color: var(--accent-blue);">T1</h2>
-          <div class="card-details">
-            <div class="detail-row"><span class="detail-label">Vitórias no Confronto:</span><span class="detail-value" id="winsTeamA">--</span></div>
-            <div class="detail-row"><span class="detail-label">Taxa de Vitória:</span><span class="detail-value green-highlight" id="winRateTeamA">--%</span></div>
-            <div class="detail-row"><span class="detail-label">Média de Kills:</span><span class="detail-value" id="killsTeamA">--</span></div>
-            <div class="detail-row"><span class="detail-label">First Blood %:</span><span class="detail-value" id="fbRateTeamA">--%</span></div>
-            <div class="detail-row"><span class="detail-label">First Tower %:</span><span class="detail-value" id="ftRateTeamA">--%</span></div>
-            <div class="detail-row"><span class="detail-label">First Dragon %:</span><span class="detail-value" id="fdRateTeamA">--%</span></div>
+    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;" id="h2hStatsRow">
+      <!-- TIME A -->
+      <div class="card" style="border-top: 4px solid var(--accent-cyan);">
+        <h2 id="nameTeamA" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 1rem;">EQUIPE A</h2>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Vitórias no Duelo:</span>
+            <strong id="winsTeamA" style="font-size: 1.1rem; color: #fff;">--</strong>
           </div>
-        </div>
-
-        <!-- STATS TEAM B -->
-        <div class="card" id="cardTeamB">
-          <h2 id="nameTeamB" style="font-size: 1.5rem; color: var(--accent-purple);">GEN</h2>
-          <div class="card-details">
-            <div class="detail-row"><span class="detail-label">Vitórias no Confronto:</span><span class="detail-value" id="winsTeamB">--</span></div>
-            <div class="detail-row"><span class="detail-label">Taxa de Vitória:</span><span class="detail-value green-highlight" id="winRateTeamB">--%</span></div>
-            <div class="detail-row"><span class="detail-label">Média de Kills:</span><span class="detail-value" id="killsTeamB">--</span></div>
-            <div class="detail-row"><span class="detail-label">First Blood %:</span><span class="detail-value" id="fbRateTeamB">--%</span></div>
-            <div class="detail-row"><span class="detail-label">First Tower %:</span><span class="detail-value" id="ftRateTeamB">--%</span></div>
-            <div class="detail-row"><span class="detail-label">First Dragon %:</span><span class="detail-value" id="fdRateTeamB">--%</span></div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Taxa de Vitória:</span>
+            <strong id="winRateTeamA" style="font-size: 1.1rem; color: var(--accent-green);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Média de Abates:</span>
+            <strong id="killsTeamA" style="font-size: 1.1rem; color: #fff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Blood Rate:</span>
+            <strong id="fbRateTeamA" style="color: var(--accent-gold);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Tower Rate:</span>
+            <strong id="ftRateTeamA" style="color: var(--accent-gold);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Dragon Rate:</span>
+            <strong id="fdRateTeamA" style="color: var(--accent-gold);">--%</strong>
           </div>
         </div>
       </div>
 
-      <!-- RECENT H2H GAMES TABLE -->
-      <div class="table-container">
-        <div class="table-header">
-          <h2 style="font-size: 1.1rem;">📅 Últimos Mapas Diretos Registrados</h2>
-          <span id="h2hAvgDuration" style="font-size: 0.85rem; color: var(--accent-cyan);">Duração Média: --:--</span>
+      <!-- TIME B -->
+      <div class="card" style="border-top: 4px solid var(--accent-red);">
+        <h2 id="nameTeamB" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-red); margin-bottom: 1rem;">EQUIPE B</h2>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Vitórias no Duelo:</span>
+            <strong id="winsTeamB" style="font-size: 1.1rem; color: #fff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Taxa de Vitória:</span>
+            <strong id="winRateTeamB" style="font-size: 1.1rem; color: var(--accent-green);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Média de Abates:</span>
+            <strong id="killsTeamB" style="font-size: 1.1rem; color: #fff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Blood Rate:</span>
+            <strong id="fbRateTeamB" style="color: var(--accent-gold);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Tower Rate:</span>
+            <strong id="ftRateTeamB" style="color: var(--accent-gold);">--%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">First Dragon Rate:</span>
+            <strong id="fdRateTeamB" style="color: var(--accent-gold);">--%</strong>
+          </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Mapa / Série</th>
-              <th>Vencedor</th>
-              <th>Duração In-Game</th>
-              <th>Placar Kills</th>
-              <th>First Blood</th>
-              <th>First Tower</th>
-              <th>Handicap de Green</th>
-            </tr>
-          </thead>
-          <tbody id="h2hTableBody">
-            <tr>
-              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                Selecione as equipes e clique em Comparar.
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
+    </div>
+
+    <!-- TABELA DE CONFRONTOS HISTÓRICOS -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3 style="font-size: 1.1rem; font-weight: 700;">Confrontos Diretos Anteriores</h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);" id="h2hAvgDuration">Duração Média: --:--</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Vencedor</th>
+            <th>Duração</th>
+            <th>Placar Kills</th>
+            <th>First Blood</th>
+            <th>First Tower</th>
+            <th>First Dragon</th>
+          </tr>
+        </thead>
+        <tbody id="h2hTableBody">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              Digite as siglas de duas equipes acima para carregar o histórico direto.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 
-  <!-- FOOTER -->
   <footer>
-    <p>LOL-Database • Análise H2H & Tendências de Apostas</p>
+    LIVE BET CORE • Comparador H2H • Telemetria Oficial Riot Games
   </footer>
 
+  <script src="js/config.js"></script>
   <script src="js/h2h.js"></script>
 </body>
 </html>

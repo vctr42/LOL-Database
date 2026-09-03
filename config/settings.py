@@ -1,44 +1,89 @@
-import os
 import json
 from pathlib import Path
-from dotenv import load_dotenv
+from typing import Dict, Any, Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
-# Carregar arquivo .env
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
 
-# Base de Dados
-DB_MODE = os.getenv("DB_MODE", "sqlite").lower() # "sqlite" ou "supabase"
-SQLITE_DB_PATH = os.getenv("SQLITE_DB_PATH", str(BASE_DIR / "data" / "settlement_data.db"))
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
-DATABASE_URL = os.getenv("DATABASE_URL", "")
+class AppSettings(BaseSettings):
+    # Banco de Dados
+    db_mode: str = Field(default="supabase", alias="DB_MODE")
+    sqlite_db_path: str = Field(default="data/live_bet_core.db", alias="SQLITE_DB_PATH")
+    supabase_url: Optional[str] = Field(default=None, alias="SUPABASE_URL")
+    supabase_anon_key: Optional[str] = Field(default=None, alias="SUPABASE_ANON_KEY")
 
-# Riot Esports API
-RIOT_API_KEY = os.getenv("RIOT_API_KEY", "")
-RIOT_LOCALE = os.getenv("RIOT_LOCALE", "pt-BR")
+    # Discord Notificações
+    enable_discord_notifications: bool = Field(default=True, alias="ENABLE_DISCORD_NOTIFICATIONS")
+    discord_webhook_default: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_DEFAULT")
+    discord_webhook_cblol: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_CBLOL")
+    discord_webhook_circuito_desafiante: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_CIRCUITO_DESAFIANTE")
+    discord_webhook_lck: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LCK")
+    discord_webhook_lck_cl: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LCK_CL")
+    discord_webhook_lpl: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LPL")
+    discord_webhook_lcp: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LCP")
+    discord_webhook_lrn: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LRN")
+    discord_webhook_prime_league: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_PRIME_LEAGUE")
+    discord_webhook_rift_legends: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_RIFT_LEGENDS")
 
-# Discord Webhooks
-DISCORD_WEBHOOK_DEFAULT = os.getenv("DISCORD_WEBHOOK_DEFAULT", "")
-ENABLE_DISCORD_NOTIFICATIONS = os.getenv("ENABLE_DISCORD_NOTIFICATIONS", "false").lower() in ("true", "1", "yes")
+    # Monitoramento
+    riot_locale: str = Field(default="pt-BR", alias="RIOT_LOCALE")
+    monitor_interval_seconds: int = Field(default=10, alias="MONITOR_INTERVAL_SECONDS")
+    auto_settle_live: bool = Field(default=True, alias="AUTO_SETTLE_LIVE")
+    log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
-# Carregar mapeamento de canais por liga
-LEAGUE_CONFIG_PATH = BASE_DIR / "config" / "league_channels.json"
-LEAGUE_CONFIG = {}
-if LEAGUE_CONFIG_PATH.exists():
-    try:
-        with open(LEAGUE_CONFIG_PATH, "r", encoding="utf-8") as f:
-            LEAGUE_CONFIG = json.load(f)
-    except Exception:
-        LEAGUE_CONFIG = {}
+    model_config = SettingsConfigDict(
+        env_file=str(BASE_DIR / ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
-def get_league_webhook(league_slug: str) -> str:
-    """Retorna o webhook configurado para a liga ou o webhook default."""
-    slug = (league_slug or "").lower().strip()
-    league_info = LEAGUE_CONFIG.get(slug, LEAGUE_CONFIG.get("default", {}))
-    env_var = league_info.get("env_webhook", "DISCORD_WEBHOOK_DEFAULT")
-    webhook = os.getenv(env_var, "")
-    if not webhook:
-        webhook = DISCORD_WEBHOOK_DEFAULT
-    return webhook
+settings = AppSettings()
+
+def load_league_metadata() -> Dict[str, Any]:
+    """Carrega o arquivo leagues.json e constrói índice invertido por slug e alias."""
+    leagues_file = BASE_DIR / "config" / "leagues.json"
+    if not leagues_file.exists():
+        return {}
+    with open(leagues_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+LEAGUES_DATA = load_league_metadata()
+
+# Dicionário de normalização de slugs por alias
+SLUG_ALIASES: Dict[str, str] = {}
+for canonical_slug, data in LEAGUES_DATA.items():
+    SLUG_ALIASES[canonical_slug.lower()] = canonical_slug
+    for alias in data.get("aliases", []):
+        SLUG_ALIASES[alias.lower()] = canonical_slug
+
+def normalize_league_slug(raw_slug: Optional[str]) -> str:
+    """Mapeia qualquer variação oficial de slug da Riot para o slug canônico."""
+    if not raw_slug:
+        return "default"
+    clean = raw_slug.strip().lower().replace("_", "-")
+    
+    if clean in SLUG_ALIASES:
+        return SLUG_ALIASES[clean]
+        
+    for alias, canonical in SLUG_ALIASES.items():
+        if alias in clean:
+            return canonical
+            
+    return "default"
+
+def get_league_config(raw_slug: Optional[str]) -> Dict[str, Any]:
+    """Retorna metadados completos da liga a partir de qualquer slug ou alias."""
+    canonical = normalize_league_slug(raw_slug)
+    config = LEAGUES_DATA.get(canonical, LEAGUES_DATA.get("default", {}))
+    return config
+
+def get_league_webhook(raw_slug: Optional[str]) -> Optional[str]:
+    """Retorna o webhook URL correspondente configurado no .env."""
+    config = get_league_config(raw_slug)
+    env_var_name = config.get("env_webhook")
+    if not env_var_name:
+        return settings.discord_webhook_default
+        
+    val = getattr(settings, env_var_name.lower(), None)
+    return val or settings.discord_webhook_default

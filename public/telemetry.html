@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telemetria dos Jogadores • LOL-Database</title>
+  <title>Telemetria dos 10 Jogadores • LIVE BET CORE</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%200%20100%20100%22><text y=%22.9em%22 font-size=%2290%22>👤</text></svg>">
 </head>
@@ -11,9 +11,9 @@
   <!-- NAVBAR -->
   <header class="navbar">
     <div class="nav-brand">
-      <span class="brand-icon">🎮</span>
-      <span class="brand-title">LOL-Database</span>
-      <span class="badge-live">● PLAYER TELEMETRY</span>
+      <span style="font-size: 1.5rem;">🎮</span>
+      <span class="brand-title">LIVE BET CORE</span>
+      <span class="badge-live">● RIOT LIVE FEED</span>
     </div>
     <nav class="nav-links">
       <a href="index.html" class="nav-link">Dashboard</a>
@@ -22,84 +22,86 @@
     </nav>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="container">
     <section class="hero">
       <div>
-        <h1 id="telemetryMapTitle">Telemetria Individual dos 10 Jogadores</h1>
-        <p id="telemetrySubtitle">Selecione uma partida para inspecionar KDA, Dano, Ouro, CS e KP%</p>
-      </div>
-      <div>
-        <select id="gameSelect" style="padding: 0.6rem; background: var(--bg-card); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; font-weight: 600;">
-          <option value="">Carregando mapas...</option>
-        </select>
+        <h1>Telemetria Individual dos 10 Jogadores</h1>
+        <p>Estatísticas profundas extraídas da CDN da Riot: KDA, CS, Ouro, Dano e Kill Participation</p>
       </div>
     </section>
 
-    <!-- BLUE TEAM TABLE -->
-    <div class="table-container" style="margin-bottom: 2rem; border-left: 4px solid var(--accent-blue);">
+    <!-- GAME SELECTOR -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Selecione o Mapa Registrado:</label>
+      <select id="gameSelect" style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); color: #fff; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem;">
+        <option value="">Carregando mapas do Data Lake...</option>
+      </select>
+    </div>
+
+    <h2 id="telemetryMapTitle" style="font-size: 1.3rem; font-weight: 800; margin-bottom: 1.5rem; color: #fff;">
+      Telemetria do Mapa
+    </h2>
+
+    <!-- TABELA BLUE TEAM -->
+    <div class="table-container" style="margin-bottom: 2rem; border-top: 4px solid var(--accent-cyan);">
       <div class="table-header">
-        <h2 id="blueTeamHeader" style="font-size: 1.1rem; color: var(--accent-blue);">🔵 LADO AZUL</h2>
+        <h3 id="blueTeamHeader" style="font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan);">🔵 LADO AZUL</h3>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Posição</th>
+            <th>Rota</th>
             <th>Jogador</th>
             <th>Campeão</th>
-            <th>KDA</th>
+            <th>K/D/A</th>
             <th>CS</th>
-            <th>Ouro Total</th>
-            <th>Dano aos Campeões</th>
+            <th>Ouro</th>
+            <th>Dano Causado</th>
             <th>KP %</th>
-            <th>Ouro %</th>
+            <th>Gold %</th>
           </tr>
         </thead>
         <tbody id="blueTableBody">
           <tr>
-            <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
-              Selecione um mapa acima para ver a telemetria do Lado Azul.
-            </td>
+            <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">Carregando...</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- RED TEAM TABLE -->
-    <div class="table-container" style="border-left: 4px solid var(--accent-red);">
+    <!-- TABELA RED TEAM -->
+    <div class="table-container" style="border-top: 4px solid var(--accent-red);">
       <div class="table-header">
-        <h2 id="redTeamHeader" style="font-size: 1.1rem; color: var(--accent-red);">🔴 LADO VERMELHO</h2>
+        <h3 id="redTeamHeader" style="font-size: 1.1rem; font-weight: 700; color: var(--accent-red);">🔴 LADO VERMELHO</h3>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Posição</th>
+            <th>Rota</th>
             <th>Jogador</th>
             <th>Campeão</th>
-            <th>KDA</th>
+            <th>K/D/A</th>
             <th>CS</th>
-            <th>Ouro Total</th>
-            <th>Dano aos Campeões</th>
+            <th>Ouro</th>
+            <th>Dano Causado</th>
             <th>KP %</th>
-            <th>Ouro %</th>
+            <th>Gold %</th>
           </tr>
         </thead>
         <tbody id="redTableBody">
           <tr>
-            <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
-              Selecione um mapa acima para ver a telemetria do Lado Vermelho.
-            </td>
+            <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">Carregando...</td>
           </tr>
         </tbody>
       </table>
     </div>
   </main>
 
-  <!-- FOOTER -->
   <footer>
-    <p>LOL-Database • Telemetria Oficial dos 10 Jogadores • Data Lake Supabase</p>
+    LIVE BET CORE • Telemetria Oficial Riot Games • In-Game Clock Estrito
   </footer>
 
+  <script src="js/config.js"></script>
   <script src="js/telemetry.js"></script>
 </body>
 </html>
