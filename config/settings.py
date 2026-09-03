@@ -25,6 +25,7 @@ class AppSettings(BaseSettings):
     discord_webhook_lrn: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_LRN")
     discord_webhook_prime_league: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_PRIME_LEAGUE")
     discord_webhook_rift_legends: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_RIFT_LEGENDS")
+    discord_webhook_nacl: Optional[str] = Field(default=None, alias="DISCORD_WEBHOOK_NACL")
 
     # Monitoramento
     riot_locale: str = Field(default="pt-BR", alias="RIOT_LOCALE")

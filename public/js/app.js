@@ -127,6 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentLeague === "lck") {
         return slug.includes("lck") && !slug.includes("cl") && !slug.includes("challengers");
       }
+      if (currentLeague === "lcs") {
+        return slug.includes("lcs") && !slug.includes("nacl") && !slug.includes("challengers");
+      }
+      if (currentLeague === "nacl") {
+        return slug.includes("nacl") || slug.includes("north-american-challengers") || slug.includes("na-challengers");
+      }
       return slug.includes(currentLeague);
     });
   }

@@ -85,7 +85,15 @@
     "bot_username": "LCS Settlement Bot",
     "color": 3447003,
     "env_webhook": "DISCORD_WEBHOOK_DEFAULT",
-    "aliases": ["lcs", "nacl"]
+    "aliases": ["lcs"]
+  },
+  "nacl": {
+    "name": "NACL",
+    "channel_name": "#nacl",
+    "bot_username": "NACL Settlement Bot",
+    "color": 15158332,
+    "env_webhook": "DISCORD_WEBHOOK_NACL",
+    "aliases": ["nacl", "north-american-challengers-league", "na-challengers", "lcs-challengers"]
   },
   "default": {
     "name": "Geral",
