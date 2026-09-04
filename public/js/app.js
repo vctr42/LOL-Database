@@ -55,6 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "Authorization": `Bearer ${APP_CONFIG.SUPABASE_ANON_KEY}`
       };
 
+      // Acionar varredura contínua na nuvem (Edge Daemon 24/7)
+      fetch(`${APP_CONFIG.SUPABASE_URL}/functions/v1/live-monitor`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+      }).catch(() => {});
+
       const [gamesRes, dossiersRes] = await Promise.allSettled([
         fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/lol_games?select=*&order=created_at.desc&limit=50`, { headers }),
         fetch(`${APP_CONFIG.SUPABASE_URL}/rest/v1/settlement_dossiers?select=*&order=created_at.desc&limit=50`, { headers })
