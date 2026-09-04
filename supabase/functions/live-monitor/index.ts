@@ -397,8 +397,9 @@ Deno.serve(async (_req: Request) => {
     if (naclResp.status === "fulfilled" && naclResp.value.ok) htmls.push(await naclResp.value.text());
 
     const combinedHtml = htmls.join("\n");
-    const eventRegex = /\{"__typename":"EventMatch".*?"matchTeams":\[.*?\]\}/g;
-    const chunks = combinedHtml.match(eventRegex) || [];
+    // Extração completa de cada evento garantindo inclusão de matchTeams e games
+    const rawEvents = combinedHtml.split('{"__typename":"EventMatch"');
+    const chunks = rawEvents.slice(1).map(p => '{"__typename":"EventMatch"' + p);
 
     // 2. Carregar partidas já salvas no Supabase
     const { data: dbGames } = await supabase.from("lol_games").select("id");
@@ -441,7 +442,7 @@ Deno.serve(async (_req: Request) => {
           const windowResp = await fetch(`https://feed.lolesports.com/livestats/v1/window/${gameId}`, {
             headers: { "User-Agent": "Mozilla/5.0" }
           });
-          if (!windowResp.ok) continue;
+          if (windowResp.status !== 200) continue;
 
           const windowData = await windowResp.json();
           const frames = windowData.frames || [];
